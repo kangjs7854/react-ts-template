@@ -33,12 +33,13 @@ const FormSizeDemo = () => {
             <Radio.Button value="large">Large</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="Input">
+        <Form.Item label="apiUrl">
           <Input />
         </Form.Item>
-        <Form.Item label="Select">
+        <Form.Item label="methods">
           <Select>
-            <Select.Option value="demo">Demo</Select.Option>
+            <Select.Option value="get">get</Select.Option>
+            <Select.Option value="post">post</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item label="TreeSelect">
