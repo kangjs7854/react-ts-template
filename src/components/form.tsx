@@ -1,85 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from "react";
 import {
   Form,
   Input,
   Button,
-  Radio,
   Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-} from 'antd';
-const FormSizeDemo = () => {
-  const [componentSize, setComponentSize] = useState('default');
-  const onFormLayoutChange = ({ size }) => {
-    setComponentSize(size);
+  Row,
+  Col,
+  Divider,
+  notification,
+} from "antd";
+
+import SchemaTable from "@/components/SchmeTable";
+import Http from "@/utils/http";
+
+const http = new Http();
+
+const { TextArea } = Input;
+const { Option } = Select;
+
+const FormSizeDemo: React.FC = () => {
+  const [url, setUrl] = useState("");
+  const [method, setMethod] = useState("post");
+  const [mockUrl, setMockUrl] = useState("");
+  const childRef = useRef();
+
+  const [response,setResponse] = useState('')
+
+  const handleSubmit = async () => {
+    console.log(url, method);
+    const Schema = {};
+    const params = {};
+    const data = childRef.current.getDataSource();
+    console.log(data);
+
+    data.forEach((el) => {
+      Schema[el.schemaKey] = el.schemaType;
+      params[el.schemaKey] = el.schemaValue;
+    });
+    Object.assign(params, { Schema });
+    if (!url) return notification.warning({ message: "url不能为空" });
+    const requestUrl = `http://localhost:3000/api/mock/${url}`;
+    const res = await http.post(requestUrl, params);
+    const req = {
+      params,
+      url: requestUrl,
+    };
+    console.log({ req, res });
+    setMockUrl(requestUrl);
+    setResponse(res)
   };
+
   return (
     <>
-      <Form
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 14 }}
-        layout="horizontal"
-        initialValues={{ size: componentSize }}
-        onValuesChange={onFormLayoutChange}
-        size={componentSize}
-      >
-        <Form.Item label="Form Size" name="size">
-          <Radio.Group>
-            <Radio.Button value="small">Small</Radio.Button>
-            <Radio.Button value="default">Default</Radio.Button>
-            <Radio.Button value="large">Large</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item label="apiUrl">
-          <Input />
-        </Form.Item>
-        <Form.Item label="methods">
-          <Select>
-            <Select.Option value="get">get</Select.Option>
-            <Select.Option value="post">post</Select.Option>
+      <Row>
+        <Col>
+          <Select
+            defaultValue={method}
+            style={{ width: 120 }}
+            onChange={(e) => setMethod(e)}
+          >
+            <Option value="post">post</Option>
+            <Option value="get">get</Option>
           </Select>
-        </Form.Item>
-        <Form.Item label="TreeSelect">
-          <TreeSelect
-            treeData={[
-              { title: 'Light', value: 'light', children: [{ title: 'Bamboo', value: 'bamboo' }] },
-            ]}
+        </Col>
+        <Col>
+          <Input
+            placeholder="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
           />
-        </Form.Item>
-        <Form.Item label="Cascader">
-          <Cascader
-            options={[
-              {
-                value: 'zhejiang',
-                label: 'Zhejiang',
-                children: [
-                  {
-                    value: 'hangzhou',
-                    label: 'Hangzhou',
-                  },
-                ],
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="DatePicker">
-          <DatePicker />
-        </Form.Item>
-        <Form.Item label="InputNumber">
-          <InputNumber />
-        </Form.Item>
-        <Form.Item label="Switch">
-          <Switch />
-        </Form.Item>
-        <Form.Item label="Button">
-          <Button>Button</Button>
-        </Form.Item>
-      </Form>
+        </Col>
+      </Row>
+      <Divider orientation="left">Define Data</Divider>
+
+      <SchemaTable ref={childRef} />
+      <Button type="primary" onClick={handleSubmit}>保存</Button>
+
+      {mockUrl ? (
+        <>
+        <Divider orientation="left">mock地址：</Divider>
+        <Row >
+          <Col flex={2}><h3>{mockUrl}</h3></Col>
+          <Col><Button >点击复制</Button></Col>
+        </Row>
+        <h3 style={{color:"#1890ff"}}>response：</h3>
+        <pre className="language-bash">{JSON.stringify(response, null, 2)}</pre>
+        </>
+      ) : null}
     </>
   );
 };
 
-export default FormSizeDemo
+export default FormSizeDemo;

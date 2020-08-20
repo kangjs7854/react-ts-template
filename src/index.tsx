@@ -1,12 +1,12 @@
 /*
  * @Date: 2020-08-19 14:06:47
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-20 09:46:47
+ * @LastEditTime: 2020-08-20 11:30:10
  * @FilePath: \react-ts-template\src\index.tsx
  */
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./app";
+import App from "./App";
 
 import { Layout, Menu, Breadcrumb } from "antd";
 import {
@@ -17,6 +17,7 @@ import {
 
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
+
 
 if (module && module.hot) {
   module.hot.accept();
