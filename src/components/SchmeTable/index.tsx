@@ -7,7 +7,18 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { Table, Input, Button, Popconfirm, Form, Select } from "antd";
+import {
+  Table,
+  Input,
+  Button,
+  Popconfirm,
+  Form,
+  Select,
+  Row,
+  Col,
+  Tag,
+  notification,
+} from "antd";
 const { Option } = Select;
 
 const EditableContext = React.createContext<any>();
@@ -147,11 +158,23 @@ const EditableTable: React.FC = (props, ref) => {
     },
   ]);
 
+  const [uniqueKey, setUnique] = useState("name");
+
   useImperativeHandle(ref, () => {
     return {
-      getDataSource: () => dataSource,
+      getDataSource: () => {
+        return {
+          dataSource,
+          uniqueKey,
+        };
+      },
     };
   });
+
+  const handleSetUnique = (e) => {
+    setUnique(e);
+    notification.success({ message: "设置" + e + "为标识的key成功" });
+  };
 
   const columns = [
     {
@@ -165,6 +188,13 @@ const EditableTable: React.FC = (props, ref) => {
       dataIndex: "schemaKey",
       width: "20%",
       editable: true,
+      render: (text, record) => {
+        return uniqueKey == record.schemaKey ? (
+          <Tag color="magenta">{text}</Tag>
+        ) : (
+          <p>{text}</p>
+        );
+      },
     },
     {
       title: "schemaValue",
@@ -177,12 +207,21 @@ const EditableTable: React.FC = (props, ref) => {
       dataIndex: "operation",
       render: (text, record) =>
         dataSource.length >= 1 ? (
-          <Popconfirm
-            title="Sure to delete?"
-            onConfirm={() => handleDelete(record.key)}
-          >
-            <a>Delete</a>
-          </Popconfirm>
+          <Row align="middle">
+            <Col>
+              <Popconfirm
+                title="Sure to delete?"
+                onConfirm={() => handleDelete(record.key)}
+              >
+                <a>Delete</a>
+              </Popconfirm>
+            </Col>
+            <Col push="6">
+              <Button onClick={() => handleSetUnique(record.schemaKey)}>
+                setUnique
+              </Button>
+            </Col>
+          </Row>
         ) : null,
     },
   ];
@@ -240,12 +279,16 @@ const EditableTable: React.FC = (props, ref) => {
 
   return (
     <div>
-      <Button onClick={handleAdd} type="primary">
-        Add a Schema
-      </Button>
+      <Row gutter={[16, 16]}>
+        <Col>
+          <Button onClick={handleAdd} type="primary">
+            Add a Schema
+          </Button>
+        </Col>
+      </Row>
       <Table
         components={components}
-        rowClassName={() => "editable-row"}
+        rowClassName={(record) => "editable-row"}
         bordered
         dataSource={dataSource}
         columns={columnsNode}
