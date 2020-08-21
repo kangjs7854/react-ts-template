@@ -10,21 +10,18 @@ import {
   notification,
 } from "antd";
 
-import SchemaTable from "@/components/SchmeTable";
-import Http from "@/utils/http";
+import SchemaTable from "@/components/SchemaTable";
+import api from '@/api/index'
 
-const http = new Http();
-
-const { TextArea } = Input;
 const { Option } = Select;
 
 const FormSizeDemo: React.FC = () => {
   const [url, setUrl] = useState("");
   const [method, setMethod] = useState("post");
   const [mockUrl, setMockUrl] = useState("");
-  const childRef = useRef();
-
   const [response, setResponse] = useState("");
+
+  const childRef = useRef();
 
   const handleSubmit = async () => {
     console.log(url, method);
@@ -36,15 +33,11 @@ const FormSizeDemo: React.FC = () => {
       params[el.schemaKey] = el.schemaValue;
     });
     Object.assign(params, { Schema },{uniqueKey});
+
+
     if (!url) return notification.warning({ message: "url不能为空" });
-    const requestUrl = `http://localhost:3000/api/mock/${url}`;
-    const res = await http.post(requestUrl, params);
-    const req = {
-      params,
-      url: requestUrl,
-    };
-    console.log({ req, res });
-    setMockUrl(requestUrl);
+    const res = await api.getMockApi(url, params);
+    setMockUrl(`http://localhost:3000/api/mock/${url}`);
     setResponse(res);
     notification.warning({ message: "保存成功" });
   };
@@ -88,6 +81,7 @@ const FormSizeDemo: React.FC = () => {
       <Divider orientation="left">Define Data</Divider>
 
       <SchemaTable ref={childRef} />
+
       <Button type="primary" onClick={handleSubmit}>
         保存
       </Button>

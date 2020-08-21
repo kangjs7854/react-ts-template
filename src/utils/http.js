@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-07-14 14:34:09
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-20 17:47:05
- * @FilePath: \react-ts-template\utils\http.js
+ * @LastEditTime: 2020-08-21 16:00:47
+ * @FilePath: \react-ts-template\src\utils\http.js
  */
 
 import axios from 'axios'
@@ -103,6 +103,23 @@ export default class Http {
       .catch(error => {
         console.log('error', error);
       });
+  }
+
+  delete(url, params = {}) {
+    const option = {
+      timeout: 1000 * 10,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    const instance = axios.create(option);
+    return instance.delete(url, {data:params})
+      .then(res => {
+        return res.data
+      })
+      .catch(err => {
+        console.log('error', error);
+      })
   }
 
 }

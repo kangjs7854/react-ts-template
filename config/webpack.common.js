@@ -138,11 +138,11 @@ module.exports = {
             name: isDev ? '正在启动' : '正在打包',
             color: '#fa8c16',
         }),
-        new ForkTsCheckerWebpackPlugin({
-            typescript: {
-                configFile: path.resolve(__dirname, '../tsconfig.json'),
-            },
-        }),
+        // new ForkTsCheckerWebpackPlugin({
+        //     typescript: {
+        //         configFile: path.resolve(__dirname, '../tsconfig.json'),
+        //     },
+        // }),
         new HardSourceWebpackPlugin(),
     ],
     //loader处理

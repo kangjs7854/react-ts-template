@@ -11,6 +11,12 @@
       "@babel/preset-typescript"
     ],
     "plugins": [
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
       "transform-class-properties",//解决class中不能使用箭头函数的问题
       [
         "@babel/plugin-transform-runtime",
@@ -21,7 +27,8 @@
           },
           "useESModules": true
         }
-      ]
+      ],
+      
     ]
   }
   

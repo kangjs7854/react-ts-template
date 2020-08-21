@@ -1,4 +1,4 @@
-import "./index.scss";
+import "./table.scss";
 import React, {
   useContext,
   useState,
@@ -26,7 +26,7 @@ const EditableContext = React.createContext<any>();
 interface Item {
   key: string;
   schemaType: string;
-  schemaKay: string;
+  schemaKey: string;
   schemaValue: string;
 }
 
@@ -188,7 +188,7 @@ const EditableTable: React.FC = (props, ref) => {
       dataIndex: "schemaKey",
       width: "20%",
       editable: true,
-      render: (text, record) => {
+      render: (text:string, record:Item) => {
         return uniqueKey == record.schemaKey ? (
           <Tag color="magenta">{text}</Tag>
         ) : (
@@ -205,7 +205,7 @@ const EditableTable: React.FC = (props, ref) => {
     {
       title: "operation",
       dataIndex: "operation",
-      render: (text, record) =>
+      render: (text:string, record:Item) =>
         dataSource.length >= 1 ? (
           <Row align="middle">
             <Col>
@@ -239,7 +239,7 @@ const EditableTable: React.FC = (props, ref) => {
     }
     return {
       ...col,
-      onCell: (record) => ({
+      onCell: (record:Item) => ({
         record,
         editable: col.editable,
         dataIndex: col.dataIndex,
@@ -249,7 +249,8 @@ const EditableTable: React.FC = (props, ref) => {
     };
   });
 
-  const handleDelete = (key) => {
+  const handleDelete = (key:string) => {
+    
     setDataSource(dataSource.filter((item) => item.key !== key));
   };
 
