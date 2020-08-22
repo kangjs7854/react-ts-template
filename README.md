@@ -27,4 +27,3 @@ react的配置基本就是引入两个库及使用配置babel进行语法转换�
 
 ts的安装比较简单，直接使用```npm ```包安装完成后新建```tsconfig```文件夹进行配置即可。
 在```.babelrc```文件也要添加ts的语法支持 ```"presets": ["@babel/preset-typescript" ]```
-

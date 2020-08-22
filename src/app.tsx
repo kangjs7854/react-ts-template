@@ -8,7 +8,7 @@ import React, { FC } from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
 
 import ApiList from "@/components/ApiList";
-import Form from "@/components/Form";
+import ApiForm from "@/components/ApiForm";
 import Counter from '@/components/Counter'
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -39,7 +39,7 @@ class App extends React.Component  {
                 <ApiList />
               </Sider>
               <Content style={{ padding: "0 24px", minHeight: 280 }}>
-                <Form />
+                <ApiForm />
               </Content>
             </Layout>
           </Content>

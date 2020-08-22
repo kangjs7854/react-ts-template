@@ -8,15 +8,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { Provider } from "mobx-react";
-import Count from '@/store/count'
-
+import CountStore from '@/store/count'
+import ApiListStore from "@/store/apiList";
 
 // if (module && module.hot) {
 //   module.hot.accept();
 // }
 
 const stores={
-  count:new Count()
+  countStore:new CountStore(),
+  apiListStore:new ApiListStore()
 }
 
 ReactDOM.render(
