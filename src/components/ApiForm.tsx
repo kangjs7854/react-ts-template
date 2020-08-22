@@ -12,7 +12,6 @@ import {
 } from "antd";
 
 import SchemaTable from "@/components/SchemaTable";
-import { useLocalStore, useObserver } from 'mobx-react';
 
 import api from '@/api/index'
 
