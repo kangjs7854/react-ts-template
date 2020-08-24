@@ -3,7 +3,7 @@ import api from "@/api/index";
 import { Menu, Tag, Popconfirm, Button } from "antd";
 import { observer, inject } from "mobx-react";
 
-@inject("apiListStore")
+@inject("apiStore")
 @observer
 export default class ApiList extends Component {
   constructor(props) {
@@ -12,17 +12,21 @@ export default class ApiList extends Component {
   }
 
   componentDidMount() {
-    this.props.apiListStore.getAllMockApi()
+    this.props.apiStore.getAllMockApi()
   }
 
 
   async handleDelete(url: string, e: any) {
     e.preventDefault();
-    this.props.apiListStore.deleteMockApi(url)
+    this.props.apiStore.deleteMockApi(url)
+  }
+
+  handleChooseApi(url:String){
+    this.props.apiStore.handleChooseApi(url)
   }
 
   render() {
-    const {apiList} = this.props.apiListStore
+    const {apiList} = this.props.apiStore
     return (
       <Menu
         mode="inline"
@@ -32,7 +36,7 @@ export default class ApiList extends Component {
       >
         {Array.isArray(apiList) && apiList.map((el) => {
           return (
-            <Menu.Item key={el.key}>
+            <Menu.Item key={el.key} onClick={()=>this.handleChooseApi(el.url)}>
               <Tag color="#2db7f5">{el.methods}</Tag>
               <Tag closable onClose={(e) => this.handleDelete(el.url, e)}>
                 {el.url}

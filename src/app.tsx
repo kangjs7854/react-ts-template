@@ -1,9 +1,12 @@
 /*
  * @Date: 2020-08-19 10:57:26
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-21 17:42:42
+ * @LastEditTime: 2020-08-24 10:48:21
  * @FilePath: \react-ts-template\src\app.tsx
 //  */
+
+import { hot } from 'react-hot-loader/root';
+
 import React, { FC } from "react";
 import { Layout, Menu, Breadcrumb } from "antd";
 
@@ -53,4 +56,4 @@ class App extends React.Component  {
   }
 };
 
-export default App;
+export default hot(App);

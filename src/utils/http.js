@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-07-14 14:34:09
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-21 16:00:47
+ * @LastEditTime: 2020-08-24 15:28:17
  * @FilePath: \react-ts-template\src\utils\http.js
  */
 
@@ -81,6 +81,7 @@ export default class Http {
     let reqUrl = url.includes("http") ? url : basePath + url
     return instance.post(reqUrl, params)
       .then(res => {
+        res.config.url && sessionStorage.setItem("url",url)
         return res.data
       })
       .catch(error => {

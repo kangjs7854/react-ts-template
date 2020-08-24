@@ -19,6 +19,10 @@ import {
   Tag,
   notification,
 } from "antd";
+
+import { MobXProviderContext } from "mobx-react";
+import { observer, inject } from "mobx-react";
+
 const { Option } = Select;
 
 const EditableContext = React.createContext<any>();
@@ -90,8 +94,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
     }
   };
 
-  const handleChange = () => {};
-
   let childNode = children;
 
   if (editable) {
@@ -142,160 +144,159 @@ const EditableCell: React.FC<EditableCellProps> = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-const EditableTable: React.FC = (props, ref) => {
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "0",
-      schemaType: "String",
-      schemaKey: "name",
-      schemaValue: "London",
-    },
-    {
-      key: "1",
-      schemaType: "Number",
-      schemaKey: "age",
-      schemaValue: "18",
-    },
-  ]);
-
-  const [uniqueKey, setUnique] = useState("name");
-
-  useImperativeHandle(ref, () => {
-    return {
-      getDataSource: () => {
-        return {
-          dataSource,
-          uniqueKey,
-        };
-      },
+@inject("apiStore")
+@observer
+class EditableTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uniqueKey: "name",
     };
-  });
+  }
+ 
 
-  const handleSetUnique = (e) => {
-    setUnique(e);
+  handleSetUnique = (e) => {
+    const { apiStore } = this.props
+    apiStore.updateDefaultApi({
+      uniqueKey: e,
+    });
+    this.setState({
+      uniqueKey:e
+    })
     notification.success({ message: "设置" + e + "为标识的key成功" });
   };
 
-  const columns = [
-    {
-      title: "schemaType",
-      dataIndex: "schemaType",
-      width: "30%",
-      editable: true,
-    },
-    {
-      title: "schemaKey",
-      dataIndex: "schemaKey",
-      width: "20%",
-      editable: true,
-      render: (text:string, record:Item) => {
-        return uniqueKey == record.schemaKey ? (
-          <Tag color="magenta">{text}</Tag>
-        ) : (
-          <p>{text}</p>
-        );
-      },
-    },
-    {
-      title: "schemaValue",
-      dataIndex: "schemaValue",
-      width: "30%",
-      editable: true,
-    },
-    {
-      title: "operation",
-      dataIndex: "operation",
-      render: (text:string, record:Item) =>
-        dataSource.length >= 1 ? (
-          <Row align="middle">
-            <Col>
-              <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() => handleDelete(record.key)}
-              >
-                <a>Delete</a>
-              </Popconfirm>
-            </Col>
-            <Col push="6">
-              <Button onClick={() => handleSetUnique(record.schemaKey)}>
-                setUnique
-              </Button>
-            </Col>
-          </Row>
-        ) : null,
-    },
-  ];
-
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-    },
+  handleDelete = (key: string) => {
+    const { apiStore } = this.props;
+    apiStore.updateDefaultApi({
+      dataSource: apiStore.defaultApi.dataSource.filter(
+        (item) => item.key !== key
+      ),
+    });
   };
 
-  const columnsNode = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record:Item) => ({
-        record,
-        editable: col.editable,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave: handleSave,
-      }),
-    };
-  });
-
-  const handleDelete = (key:string) => {
-    
-    setDataSource(dataSource.filter((item) => item.key !== key));
-  };
-
-  const handleAdd = () => {
+  handleAdd = () => {
+    const { apiStore } = this.props;
     const newData = {
-      key: dataSource.length + "",
+      key: apiStore.defaultApi.dataSource.length + "",
       schemaType: `String`,
       schemaKey: "",
       schemaValue: ``,
     };
-    dataSource.push(newData);
-    console.log(dataSource);
-
-    setDataSource(dataSource.slice());
+    apiStore.updateDefaultApi({
+      dataSource: [...apiStore.defaultApi.dataSource, newData],
+    });
   };
 
-  const handleSave = (row) => {
-    const newData = dataSource;
+  handleSave = (row) => {
+    const { apiStore } = this.props;
+    const newData = apiStore.defaultApi.dataSource;
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, {
       ...item,
       ...row,
     });
-    setDataSource(newData.slice());
+    apiStore.updateDefaultApi({
+      dataSource: newData.slice(),
+    });
   };
 
-  return (
-    <div>
-      <Row gutter={[16, 16]}>
-        <Col>
-          <Button onClick={handleAdd} type="primary">
-            Add a Schema
-          </Button>
-        </Col>
-      </Row>
-      <Table
-        components={components}
-        rowClassName={(record) => "editable-row"}
-        bordered
-        dataSource={dataSource}
-        columns={columnsNode}
-      />
-    </div>
-  );
-};
+  render() {
+    const { defaultApi } = this.props.apiStore;
+    // const { uniqueKey } = this.state
+    const columns = [
+      {
+        title: "schemaType",
+        dataIndex: "schemaType",
+        width: "30%",
+        editable: true,
+      },
+      {
+        title: "schemaKey",
+        dataIndex: "schemaKey",
+        width: "20%",
+        editable: true,
+        render: (text: string, record: Item) => {
+          return defaultApi.uniqueKey == record.schemaKey ? (
+            <Tag color="magenta">{text}</Tag>
+          ) : (
+            <p>{text}</p>
+          );
+        },
+      },
+      {
+        title: "schemaValue",
+        dataIndex: "schemaValue",
+        width: "30%",
+        editable: true,
+      },
+      {
+        title: "operation",
+        dataIndex: "operation",
+        render: (text: string, record: Item) =>
+          defaultApi.dataSource.length >= 1 ? (
+            <Row align="middle">
+              <Col>
+                <Popconfirm
+                  title="Sure to delete?"
+                  onConfirm={() => this.handleDelete(record.key)}
+                >
+                  <a>Delete</a>
+                </Popconfirm>
+              </Col>
+              <Col push="6">
+                <Button onClick={() => this.handleSetUnique(record.schemaKey)}>
+                  setUnique
+                </Button>
+              </Col>
+            </Row>
+          ) : null,
+      },
+    ];
 
-export default forwardRef(EditableTable);
+    const components = {
+      body: {
+        row: EditableRow,
+        cell: EditableCell,
+      },
+    };
+
+    const columnsNode = columns.map((col) => {
+      if (!col.editable) {
+        return col;
+      }
+      return {
+        ...col,
+        onCell: (record: Item) => ({
+          record,
+          editable: col.editable,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          handleSave: this.handleSave,
+        }),
+      };
+    });
+
+    return (
+      <div>
+        <Row gutter={[16, 16]}>
+          <Col>
+            <Button onClick={this.handleAdd} type="primary">
+              Add a Schema
+            </Button>
+          </Col>
+        </Row>
+        <Table
+          components={components}
+          rowClassName={(record) => "editable-row"}
+          bordered
+          dataSource={defaultApi.dataSource}
+          columns={columnsNode}
+        />
+      </div>
+    );
+  }
+}
+
+export default EditableTable;
