@@ -4,8 +4,6 @@ import React, {
   useState,
   useEffect,
   useRef,
-  useImperativeHandle,
-  forwardRef,
 } from "react";
 import {
   Table,
@@ -20,7 +18,6 @@ import {
   notification,
 } from "antd";
 
-import { MobXProviderContext } from "mobx-react";
 import { observer, inject } from "mobx-react";
 
 const { Option } = Select;
@@ -86,7 +83,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   const save = async (e) => {
     try {
       const values = await form.validateFields();
-
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
@@ -153,7 +149,6 @@ class EditableTable extends React.Component {
       uniqueKey: "name",
     };
   }
- 
 
   handleSetUnique = (e) => {
     const { apiStore } = this.props
@@ -204,7 +199,6 @@ class EditableTable extends React.Component {
 
   render() {
     const { defaultApi } = this.props.apiStore;
-    // const { uniqueKey } = this.state
     const columns = [
       {
         title: "schemaType",

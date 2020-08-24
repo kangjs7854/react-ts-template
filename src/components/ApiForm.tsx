@@ -1,34 +1,13 @@
-import React, { useState, useRef, useContext } from "react";
-import { MobXProviderContext } from "mobx-react";
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  Row,
-  Col,
-  Divider,
-  notification,
-} from "antd";
+import React from "react";
 import { observer, inject } from "mobx-react";
-
+import { Input, Button, Select, Row, Col, Divider, notification } from "antd";
 import SchemaTable from "@/components/SchemaTable";
-
-import api from "@/api/index";
 
 const { Option } = Select;
 
 @inject("apiStore")
 @observer
 class FormSizeDemo extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mockUrl: "",
-      response: {},
-    };
-  }
-
   handleSubmit = async () => {
     const { apiStore } = this.props;
     await apiStore.getMockApi();
@@ -53,7 +32,6 @@ class FormSizeDemo extends React.Component {
 
   render() {
     const { apiStore } = this.props;
-    const { mockUrl, response } = this.state;
     return (
       <>
         <Row>
