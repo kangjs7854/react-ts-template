@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-08-21 16:32:44
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-24 15:25:30
+ * @LastEditTime: 2020-08-24 15:51:21
  * @FilePath: \react-ts-template\src\store\api.js
  */
 import { observable, action } from "mobx";
@@ -64,8 +64,6 @@ class ApiStore {
         if (!url) return notification.warning({ message: "url不能为空" });
         try {
             const res = await api.getMockApi(url, params);
-            console.log(res);
-
             this.updateDefaultApi({ response: res })
             notification.warning({ message: "mock success" });
 

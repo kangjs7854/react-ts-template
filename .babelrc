@@ -28,7 +28,14 @@
           "useESModules": true
         }
       ],
-      "react-hot-loader/babel"
+      "react-hot-loader/babel",
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "style": "css"
+        }
+      ]
     ]
   }
   

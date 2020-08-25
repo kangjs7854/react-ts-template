@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-08-19 10:57:26
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-24 10:48:21
+ * @LastEditTime: 2020-08-25 11:06:00
  * @FilePath: \react-ts-template\src\app.tsx
 //  */
 
@@ -15,7 +15,6 @@ import ApiForm from "@/components/ApiForm";
 import Counter from '@/components/Counter'
 
 const { Header, Content, Footer, Sider } = Layout;
-import "./app.scss";
 
 
 class App extends React.Component  {

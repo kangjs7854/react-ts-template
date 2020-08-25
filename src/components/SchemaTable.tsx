@@ -99,7 +99,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
         name={dataIndex}
         rules={[
           {
-            required: true,
+            required: dataIndex != 'schemaValue',
             message: `${title} is required.`,
           },
         ]}
@@ -201,12 +201,6 @@ class EditableTable extends React.Component {
     const { defaultApi } = this.props.apiStore;
     const columns = [
       {
-        title: "schemaType",
-        dataIndex: "schemaType",
-        width: "30%",
-        editable: true,
-      },
-      {
         title: "schemaKey",
         dataIndex: "schemaKey",
         width: "20%",
@@ -218,6 +212,12 @@ class EditableTable extends React.Component {
             <p>{text}</p>
           );
         },
+      },
+      {
+        title: "schemaType",
+        dataIndex: "schemaType",
+        width: "30%",
+        editable: true,
       },
       {
         title: "schemaValue",
@@ -241,7 +241,7 @@ class EditableTable extends React.Component {
               </Col>
               <Col push="6">
                 <Button onClick={() => this.handleSetUnique(record.schemaKey)}>
-                  setUnique
+                  setUniqueKey
                 </Button>
               </Col>
             </Row>
@@ -277,7 +277,7 @@ class EditableTable extends React.Component {
         <Row gutter={[16, 16]}>
           <Col>
             <Button onClick={this.handleAdd} type="primary">
-              Add a Schema
+              Add new Schema
             </Button>
           </Col>
         </Row>
