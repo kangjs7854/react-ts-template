@@ -1,13 +1,18 @@
-import React, { Component } from "react";
+import React, { Component,createRef} from "react";
 import { observer, inject } from "mobx-react";
-import { Button } from "antd";
+import { Button,Input } from "antd";
+import CountStore from "@/store/count";
 
 @inject("countStore")
 @observer
-export default class Counter extends Component {
-  constructor(props) {
-    super(props);
+export default class Counter extends Component<{ countStore: CountStore }> {
+
+  myRef = createRef<HTMLDivElement>();
+
+  componentDidMount(){
+    this.myRef.current?.focus()
   }
+
 
   handleIncrease = () => {
     this.props.countStore.increase();
@@ -24,6 +29,8 @@ export default class Counter extends Component {
         <Button onClick={() => this.handleDecrease()}>-</Button>
         {count}
         <Button onClick={this.handleIncrease}>+</Button>
+        {/* <Input ref={this.myRef}></Input> */}
+
       </div>
     );
   }

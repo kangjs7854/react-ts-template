@@ -1,13 +1,13 @@
 /*
  * @Date: 2020-08-21 16:32:44
  * @LastEditors: kjs
- * @LastEditTime: 2020-08-21 17:52:22
- * @FilePath: \react-ts-template\src\store\count.js
+ * @LastEditTime: 2020-08-25 11:23:28
+ * @FilePath: \react-ts-template\src\store\count.ts
  */
 import { observable, action,decorate } from "mobx";
 
 class CountStore {
-    @observable count = 0
+    @observable count:number = 0
 
     @action
     increase() {

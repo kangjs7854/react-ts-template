@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Menu, Tag } from "antd";
 import { observer, inject } from "mobx-react";
+import ApiStore from "@/store/api";
 
 @inject("apiStore")
 @observer
-export default class ApiList extends Component {
+export default class ApiList extends Component<{ apiStore: ApiStore }> {
   componentDidMount() {
     this.props.apiStore.getAllMockApi();
   }
@@ -14,7 +15,7 @@ export default class ApiList extends Component {
     this.props.apiStore.deleteMockApi(url);
   }
 
-  handleChooseApi(url: String) {
+  handleChooseApi(url: string) {
     this.props.apiStore.handleChooseApi(url);
   }
 
@@ -28,14 +29,17 @@ export default class ApiList extends Component {
         style={{ height: "100%" }}
       >
         {Array.isArray(apiList) &&
-          apiList.map((el) => {
+          apiList.map((el, index: number) => {
             return (
               <Menu.Item
-                key={el.key}
+                key={index}
                 onClick={() => this.handleChooseApi(el.url)}
               >
                 <Tag color="#2db7f5">{el.methods}</Tag>
-                <Tag closable onClose={(e) => this.handleDelete(el.url, e)}>
+                <Tag
+                  closable
+                  onClose={(e: any) => this.handleDelete(el.url, e)}
+                >
                   {el.url}
                 </Tag>
               </Menu.Item>

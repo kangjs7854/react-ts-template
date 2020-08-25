@@ -2,12 +2,16 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import { Input, Button, Select, Row, Col, Divider, notification } from "antd";
 import SchemaTable from "@/components/SchemaTable";
-
+import ApiStore from '@/store/api'
 const { Option } = Select;
+
+interface IProps{
+  apiStore:ApiStore
+}
 
 @inject("apiStore")
 @observer
-class FormSizeDemo extends React.Component {
+class FormSizeDemo extends React.Component<IProps> {
   handleSubmit = async () => {
     const { apiStore } = this.props;
     await apiStore.getMockApi();
@@ -15,19 +19,18 @@ class FormSizeDemo extends React.Component {
   };
 
   handleCopy = () => {
-    const activeCodeSapn = document.getElementById("mock-url");
+    const activeCodeSpan = document.getElementById("mock-url") as HTMLElement;
     const range = document.createRange();
-    window.getSelection().removeAllRanges(); //清楚页面中已有的selection
-    range.selectNode(activeCodeSapn);
-    window.getSelection().addRange(range);
+    window.getSelection()?.removeAllRanges(); //清楚页面中已有的selection
+    range.selectNode(activeCodeSpan);
+    window.getSelection()?.addRange(range);
     const tag = document.execCommand("Copy");
-
     if (tag) {
       notification.success({ message: "复制成功" });
     } else {
       // notification.fail("复制失败");
     }
-    window.getSelection().removeAllRanges();
+    window.getSelection()?.removeAllRanges();
   };
 
   render() {

@@ -1,10 +1,5 @@
 import "./table.scss";
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import {
   Table,
   Input,
@@ -16,13 +11,16 @@ import {
   Col,
   Tag,
   notification,
+  Dropdown,
+  Badge,
+  Space,
 } from "antd";
 
 import { observer, inject } from "mobx-react";
 
 const { Option } = Select;
 
-const EditableContext = React.createContext<any>();
+const EditableContext = React.createContext<any>("");
 
 interface Item {
   key: string;
@@ -65,13 +63,13 @@ const EditableCell: React.FC<EditableCellProps> = ({
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLDivElement>();
 
   const form = useContext(EditableContext);
 
   useEffect(() => {
     if (editing) {
-      inputRef.current && inputRef.current.focus();
+      inputRef.current?.focus();
     }
   }, [editing]);
 
@@ -99,7 +97,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
         name={dataIndex}
         rules={[
           {
-            required: dataIndex != 'schemaValue',
+            required: dataIndex != "schemaValue",
             message: `${title} is required.`,
           },
         ]}
@@ -140,6 +138,51 @@ const EditableCell: React.FC<EditableCellProps> = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
+const expandedRowRender = () => {
+  const columns = [
+    {
+      title: "schemaKey",
+      dataIndex: "schemaKey",
+      width: "20%",
+      editable: true,
+    },
+    {
+      title: "schemaType",
+      dataIndex: "schemaType",
+      width: "30%",
+      editable: true,
+    },
+    {
+      title: "schemaValue",
+      dataIndex: "schemaValue",
+      width: "30%",
+      editable: true,
+    },
+    {
+      title: "operation",
+      dataIndex: "operation",
+      render: (text: string, record: Item) => (
+        <Popconfirm
+          title="Sure to delete?"
+        >
+          <a>Delete</a>
+        </Popconfirm>
+      ),
+    },
+  ];
+
+  const data = [];
+  for (let i = 0; i < 3; ++i) {
+    data.push({
+      key: i,
+      date: "2014-12-24 23:12:00",
+      name: "This is production name",
+      upgradeNum: "Upgraded: 56",
+    });
+  }
+  return <Table columns={columns} dataSource={data} pagination={false} />;
+};
+
 @inject("apiStore")
 @observer
 class EditableTable extends React.Component {
@@ -151,13 +194,13 @@ class EditableTable extends React.Component {
   }
 
   handleSetUnique = (e) => {
-    const { apiStore } = this.props
+    const { apiStore } = this.props;
     apiStore.updateDefaultApi({
       uniqueKey: e,
     });
     this.setState({
-      uniqueKey:e
-    })
+      uniqueKey: e,
+    });
     notification.success({ message: "设置" + e + "为标识的key成功" });
   };
 
@@ -287,6 +330,7 @@ class EditableTable extends React.Component {
           bordered
           dataSource={defaultApi.dataSource}
           columns={columnsNode}
+          expandable={{ expandedRowRender }}
         />
       </div>
     );
