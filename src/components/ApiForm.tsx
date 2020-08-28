@@ -3,6 +3,7 @@ import { observer, inject } from "mobx-react";
 import { Input, Button, Select, Row, Col, Divider, notification } from "antd";
 import SchemaTable from "@/components/SchemaTable";
 import ApiStore from '@/store/api'
+import {render} from "react-dom";
 const { Option } = Select;
 
 interface IProps{
@@ -15,7 +16,6 @@ class FormSizeDemo extends React.Component<IProps> {
   handleSubmit = async () => {
     const { apiStore } = this.props;
     await apiStore.getMockApi();
-    apiStore.getAllMockApi();
   };
 
   handleCopy = () => {
@@ -58,8 +58,9 @@ class FormSizeDemo extends React.Component<IProps> {
             />
           </Col>
         </Row>
-        <Divider orientation="left">Define Data</Divider>
+        <Divider orientation="left">create api</Divider>
         <SchemaTable />
+        <Divider orientation="left">mock api</Divider>
 
         <Button type="primary" onClick={this.handleSubmit}>
           mock
