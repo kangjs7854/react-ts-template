@@ -3,9 +3,12 @@ import { observer, inject } from "mobx-react";
 import { Input, Button, Select, Row, Col, Divider, notification } from "antd";
 import SchemaTable from "@/components/SchemaTable";
 import ApiStore from '@/store/api'
+<<<<<<< HEAD
 import "./index.scss";
 import { CopyOutlined } from '@ant-design/icons';
 
+=======
+>>>>>>> e888b455798d489fa5326a3a4da867e53f4101d2
 import {render} from "react-dom";
 const { Option } = Select;
 
@@ -55,6 +58,7 @@ class FormSizeDemo extends React.Component<IProps> {
         </div>
         <Divider orientation="left">定义数据结构</Divider>
         <SchemaTable />
+        <Divider orientation="left">mock api</Divider>
 
         {apiStore.defaultApi.response.data ? (
           <>
