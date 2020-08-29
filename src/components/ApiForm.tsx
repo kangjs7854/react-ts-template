@@ -3,6 +3,10 @@ import { observer, inject } from "mobx-react";
 import { Input, Button, Select, Row, Col, Divider, notification } from "antd";
 import SchemaTable from "@/components/SchemaTable";
 import ApiStore from '@/store/api'
+import "./index.scss";
+import { CopyOutlined } from '@ant-design/icons';
+
+import {render} from "react-dom";
 const { Option } = Select;
 
 interface IProps{
@@ -12,11 +16,6 @@ interface IProps{
 @inject("apiStore")
 @observer
 class FormSizeDemo extends React.Component<IProps> {
-  handleSubmit = async () => {
-    const { apiStore } = this.props;
-    await apiStore.getMockApi();
-    apiStore.getAllMockApi();
-  };
 
   handleCopy = () => {
     const activeCodeSpan = document.getElementById("mock-url") as HTMLElement;
@@ -37,46 +36,30 @@ class FormSizeDemo extends React.Component<IProps> {
     const { apiStore } = this.props;
     return (
       <>
-        <Row>
-          <Col>
-            <Select
-              defaultValue={apiStore.defaultApi.methods}
-              style={{ width: 120 }}
-              onChange={(e) => apiStore.updateDefaultApi({ methods: e })}
-            >
-              <Option value="post">post</Option>
-              <Option value="get">get</Option>
-            </Select>
-          </Col>
-          <Col>
+        <div className="row">
+            <span>url地址</span>
             <Input
-              placeholder="请输入api的url地址名称"
-              value={apiStore.defaultApi.url}
-              onChange={(e) =>
-                apiStore.updateDefaultApi({ url: e.target.value })
-              }
+                className="input-wrap"
+                placeholder="api名称"
+                value={apiStore.defaultApi.url}
+                onChange={(e) =>
+                    apiStore.updateDefaultApi({ url: e.target.value })
+                }
             />
-          </Col>
-        </Row>
-        <Divider orientation="left">Define Data</Divider>
+            {apiStore.defaultApi.url && (
+                <>
+                    <span id="mock-url">{apiStore.baseUrl+apiStore.defaultApi.url}</span>
+                    <Button className='copy-btn' type="primary" shape="round" onClick={this.handleCopy} icon={<CopyOutlined />}  >复制</Button>
+                </>
+            )}
+        </div>
+        <Divider orientation="left">定义数据结构</Divider>
         <SchemaTable />
 
-        <Button type="primary" onClick={this.handleSubmit}>
-          mock
-        </Button>
-
-        {apiStore.defaultApi.url ? (
+        {apiStore.defaultApi.response.data ? (
           <>
-            <Divider orientation="left">mock地址：</Divider>
-            <Row>
-              <Col flex={2}>
-                <h3 id="mock-url">{sessionStorage.getItem("url")}</h3>
-              </Col>
-              <Col>
-                <Button onClick={this.handleCopy}>点击复制</Button>
-              </Col>
-            </Row>
-            <h3 style={{ color: "#1890ff" }}>response：</h3>
+            <Divider orientation="left">响应数据：</Divider>
+
             <pre className="language-bash">
               {JSON.stringify(apiStore.defaultApi.response, null, 2)}
             </pre>

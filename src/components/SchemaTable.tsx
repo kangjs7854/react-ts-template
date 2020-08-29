@@ -1,4 +1,4 @@
-import "./table.scss";
+import "./index.scss";
 import React, { useContext, useState, useEffect, useRef } from "react";
 import {
   Table,
@@ -14,6 +14,7 @@ import {
   Dropdown,
   Badge,
   Space,
+  Tooltip
 } from "antd";
 
 import { observer, inject } from "mobx-react";
@@ -111,6 +112,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
           >
             <Option value="String">String</Option>
             <Option value="Number">Number</Option>
+            <Option value="Object">Object</Option>
             <Option value="Boolean">Boolean</Option>
             <Option value="Date">Date</Option>
             <Option value="Array">Array</Option>
@@ -138,51 +140,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-const expandedRowRender = () => {
-  const columns = [
-    {
-      title: "schemaKey",
-      dataIndex: "schemaKey",
-      width: "20%",
-      editable: true,
-    },
-    {
-      title: "schemaType",
-      dataIndex: "schemaType",
-      width: "30%",
-      editable: true,
-    },
-    {
-      title: "schemaValue",
-      dataIndex: "schemaValue",
-      width: "30%",
-      editable: true,
-    },
-    {
-      title: "operation",
-      dataIndex: "operation",
-      render: (text: string, record: Item) => (
-        <Popconfirm
-          title="Sure to delete?"
-        >
-          <a>Delete</a>
-        </Popconfirm>
-      ),
-    },
-  ];
-
-  const data = [];
-  for (let i = 0; i < 3; ++i) {
-    data.push({
-      key: i,
-      date: "2014-12-24 23:12:00",
-      name: "This is production name",
-      upgradeNum: "Upgraded: 56",
-    });
-  }
-  return <Table columns={columns} dataSource={data} pagination={false} />;
-};
-
 @inject("apiStore")
 @observer
 class EditableTable extends React.Component {
@@ -192,6 +149,84 @@ class EditableTable extends React.Component {
       uniqueKey: "name",
     };
   }
+
+  private defaultApi = this.props.apiStore.defaultApi;
+
+  private columns = [
+    {
+      title: "名称",
+      dataIndex: "schemaKey",
+      width: "20%",
+      editable: true,
+      render: (text: string, record: Item) => {
+        return this.defaultApi.uniqueKey == record.schemaKey ? (
+          <Tag color="magenta">{text}</Tag>
+        ) : (
+          <p>{text}</p>
+        );
+      },
+    },
+    {
+      title: "类型",
+      dataIndex: "schemaType",
+      width: "30%",
+      editable: true,
+    },
+    {
+      title: "默认值",
+      dataIndex: "schemaValue",
+      width: "30%",
+      editable: true,
+    },
+    {
+      title: "操作",
+      dataIndex: "operation",
+      render: (text: string, record: Item) =>
+        this.defaultApi.dataSource.length >= 1 ? (
+          <Row align="middle">
+            <Col>
+              <Popconfirm
+                title="确定删除?"
+                onConfirm={() => this.handleDelete(record.key)}
+              >
+                <a>删除</a>
+              </Popconfirm>
+            </Col>
+            <Col push="6">
+              <Tooltip title="根据主键作为数据修改的标识">
+                <Button onClick={() => this.handleSetUnique(record.schemaKey)}>
+                  设为主键
+                </Button>
+              </Tooltip>
+
+            </Col>
+          </Row>
+        ) : null,
+    },
+  ];
+
+  private components = {
+    body: {
+      row: EditableRow,
+      cell: EditableCell,
+    },
+  };
+
+  private columnsNode = this.columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: Item) => ({
+        record,
+        editable: col.editable,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        handleSave: this.handleSave,
+      }),
+    };
+  });
 
   handleSetUnique = (e) => {
     const { apiStore } = this.props;
@@ -240,97 +275,57 @@ class EditableTable extends React.Component {
     });
   };
 
-  render() {
-    const { defaultApi } = this.props.apiStore;
-    const columns = [
+  InnerTable = () => {
+    const InnerTableDataSource = [
       {
-        title: "schemaKey",
-        dataIndex: "schemaKey",
-        width: "20%",
-        editable: true,
-        render: (text: string, record: Item) => {
-          return defaultApi.uniqueKey == record.schemaKey ? (
-            <Tag color="magenta">{text}</Tag>
-          ) : (
-            <p>{text}</p>
-          );
-        },
-      },
-      {
-        title: "schemaType",
-        dataIndex: "schemaType",
-        width: "30%",
-        editable: true,
-      },
-      {
-        title: "schemaValue",
-        dataIndex: "schemaValue",
-        width: "30%",
-        editable: true,
-      },
-      {
-        title: "operation",
-        dataIndex: "operation",
-        render: (text: string, record: Item) =>
-          defaultApi.dataSource.length >= 1 ? (
-            <Row align="middle">
-              <Col>
-                <Popconfirm
-                  title="Sure to delete?"
-                  onConfirm={() => this.handleDelete(record.key)}
-                >
-                  <a>Delete</a>
-                </Popconfirm>
-              </Col>
-              <Col push="6">
-                <Button onClick={() => this.handleSetUnique(record.schemaKey)}>
-                  setUniqueKey
-                </Button>
-              </Col>
-            </Row>
-          ) : null,
+        key: this.defaultApi.dataSource.length + "",
+        schemaType: `String`,
+        schemaKey: "",
+        schemaValue: ``,
       },
     ];
+    return (
+      <Table
+        components={this.components}
+        columns={this.columnsNode}
+        rowClassName={(record) => "editable-row"}
+        bordered
+        dataSource={InnerTableDataSource}
+        pagination={false}
+      />
+    );
+  };
 
-    const components = {
-      body: {
-        row: EditableRow,
-        cell: EditableCell,
-      },
-    };
+  //嵌套表格的配置
+  private expandableConfig = {
+    expandedRowRender: this.InnerTable,
+    rowExpandable: (record:Item) => record.schemaType == "Object",
+    defaultExpandAllRows:true
+  };
 
-    const columnsNode = columns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: (record: Item) => ({
-          record,
-          editable: col.editable,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          handleSave: this.handleSave,
-        }),
-      };
-    });
+  handleSubmit = async () => {
+    const { apiStore } = this.props;
+    await apiStore.getMockApi();
+  };
 
+  render() {
     return (
       <div>
-        <Row gutter={[16, 16]}>
-          <Col>
-            <Button onClick={this.handleAdd} type="primary">
-              Add new Schema
-            </Button>
-          </Col>
-        </Row>
+        <div className='row button-wrap'>
+          <Button shape="round" style={{paddingRight:'20px'}} onClick={this.handleAdd} type="primary">
+            添加所需要的字段
+          </Button>
+          <Button shape="round" className="mock" type="ghost" onClick={this.handleSubmit}>
+            mock
+          </Button>
+        </div>
         <Table
-          components={components}
+          components={this.components}
           rowClassName={(record) => "editable-row"}
           bordered
-          dataSource={defaultApi.dataSource}
-          columns={columnsNode}
-          expandable={{ expandedRowRender }}
+          dataSource={this.defaultApi.dataSource}
+          columns={this.columnsNode}
+          // expandable={this.expandableConfig}
         />
       </div>
     );

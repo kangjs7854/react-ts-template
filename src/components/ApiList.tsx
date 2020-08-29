@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Menu, Tag } from "antd";
+import {Badge, Menu, Tag} from "antd";
 import { observer, inject } from "mobx-react";
 import ApiStore from "@/store/api";
 
@@ -21,6 +21,7 @@ export default class ApiList extends Component<{ apiStore: ApiStore }> {
 
   render() {
     const { apiList } = this.props.apiStore;
+
     return (
       <Menu
         mode="inline"
@@ -28,6 +29,9 @@ export default class ApiList extends Component<{ apiStore: ApiStore }> {
         defaultOpenKeys={["sub1"]}
         style={{ height: "100%" }}
       >
+        <Badge className="badge" count={apiList.length} title="当前api个数">
+          <a href="#" className="head-example" />
+        </Badge>
         {Array.isArray(apiList) &&
           apiList.map((el, index: number) => {
             return (

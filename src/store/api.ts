@@ -32,6 +32,7 @@ interface IDefaultApi {
 
 
 class ApiStore {
+  @observable baseUrl :string = 'http://localhost:3000/api/mock/'
   @observable apiList: IApiList[] = [];
   @observable defaultApi: IDefaultApi = {
     methods: "post",
