@@ -23,12 +23,7 @@ const { Option } = Select;
 
 const EditableContext = React.createContext<any>("");
 
-interface Item {
-  key: string;
-  schemaType: string;
-  schemaKey: string;
-  schemaValue: string;
-}
+
 
 interface EditableRowProps {
   index: number;
@@ -50,8 +45,8 @@ interface EditableCellProps {
   editable: boolean;
   children: React.ReactNode;
   dataIndex: string;
-  record: Item;
-  handleSave: (record: Item) => void;
+  record: IDataSource;
+  handleSave: (record: IDataSource) => void;
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
@@ -98,12 +93,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
         name={dataIndex}
         rules={[
           {
-            required: dataIndex != "schemaValue",
+            required: dataIndex != "value",
             message: `${title} is required.`,
           },
         ]}
       >
-        {dataIndex == "schemaType" ? (
+        {dataIndex == "type" ? (
           <Select
             defaultValue="lucy"
             style={{ width: 120 }}
@@ -140,26 +135,21 @@ const EditableCell: React.FC<EditableCellProps> = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
+interface IProps{
+  apiStore:apiStore,
+}
+
 @inject("apiStore")
 @observer
-class EditableTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      uniqueKey: "name",
-    };
-  }
-
-  private defaultApi = this.props.apiStore.defaultApi;
-
+class EditableTable extends React.Component<IProps> {
   private columns = [
     {
       title: "名称",
-      dataIndex: "schemaKey",
+      dataIndex: "key",
       width: "20%",
       editable: true,
-      render: (text: string, record: Item) => {
-        return this.defaultApi.uniqueKey == record.schemaKey ? (
+      render: (text: string, record: IDataSource) => {
+        return record.unique ? (
           <Tag color="magenta">{text}</Tag>
         ) : (
           <p>{text}</p>
@@ -168,21 +158,21 @@ class EditableTable extends React.Component {
     },
     {
       title: "类型",
-      dataIndex: "schemaType",
+      dataIndex: "type",
       width: "30%",
       editable: true,
     },
     {
       title: "默认值",
-      dataIndex: "schemaValue",
+      dataIndex: "value",
       width: "30%",
       editable: true,
     },
     {
       title: "操作",
       dataIndex: "operation",
-      render: (text: string, record: Item) =>
-        this.defaultApi.dataSource.length >= 1 ? (
+      render: (text: string, record: IDataSource) =>
+        this.props.apiStore.dataSource.length >= 1 ? (
           <Row align="middle">
             <Col>
               <Popconfirm
@@ -194,7 +184,7 @@ class EditableTable extends React.Component {
             </Col>
             <Col push="6">
               <Tooltip title="根据主键作为数据修改的标识">
-                <Button onClick={() => this.handleSetUnique(record.schemaKey)}>
+                <Button shape='round' onClick={() => this.handleSetUnique(record)}>
                   设为主键
                 </Button>
               </Tooltip>
@@ -218,7 +208,7 @@ class EditableTable extends React.Component {
     }
     return {
       ...col,
-      onCell: (record: Item) => ({
+      onCell: (record: IDataSource) => ({
         record,
         editable: col.editable,
         dataIndex: col.dataIndex,
@@ -228,60 +218,51 @@ class EditableTable extends React.Component {
     };
   });
 
-  handleSetUnique = (e) => {
-    const { apiStore } = this.props;
-    apiStore.updateDefaultApi({
-      uniqueKey: e,
-    });
-    this.setState({
-      uniqueKey: e,
-    });
-    notification.success({ message: "设置" + e + "为标识的key成功" });
+  handleSetUnique = (e:IDataSource) => {
+    console.log(e.key)
+    const newDataSource = this.props.apiStore.dataSource
+    newDataSource.map(el=>{
+      if(el.key == e.key){
+        return el.unique = true
+      }
+      el.unique = false
+    })
+    this.props.apiStore.updateDataSource(newDataSource.slice())
+    notification.success({ message: "设置" + e.key + "为标识的key成功" });
   };
 
   handleDelete = (key: string) => {
-    const { apiStore } = this.props;
-    apiStore.updateDefaultApi({
-      dataSource: apiStore.defaultApi.dataSource.filter(
-        (item) => item.key !== key
-      ),
-    });
+    const newDataSource = this.props.apiStore.dataSource.filter(el=>el.key!=key)
+    this.props.apiStore.updateDataSource(newDataSource)
   };
 
   handleAdd = () => {
-    const { apiStore } = this.props;
     const newData = {
-      key: apiStore.defaultApi.dataSource.length + "",
-      schemaType: `String`,
-      schemaKey: "",
-      schemaValue: ``,
+      key: ``,
+      value: "",
+      type: `String`,
     };
-    apiStore.updateDefaultApi({
-      dataSource: [...apiStore.defaultApi.dataSource, newData],
-    });
+    const newDataSource = [...this.props.apiStore.dataSource,newData]
+    this.props.apiStore.updateDataSource(newDataSource)
   };
 
-  handleSave = (row) => {
-    const { apiStore } = this.props;
-    const newData = apiStore.defaultApi.dataSource;
+  handleSave = (row:IDataSource) => {
+    const newData = this.props.apiStore.dataSource;
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, {
       ...item,
       ...row,
     });
-    apiStore.updateDefaultApi({
-      dataSource: newData.slice(),
-    });
+    this.props.apiStore.updateDataSource(newData.slice())
   };
 
   InnerTable = () => {
     const InnerTableDataSource = [
       {
-        key: this.defaultApi.dataSource.length + "",
-        schemaType: `String`,
-        schemaKey: "",
-        schemaValue: ``,
+        type: `String`,
+        key: "",
+        value: ``,
       },
     ];
     return (
@@ -299,13 +280,14 @@ class EditableTable extends React.Component {
   //嵌套表格的配置
   private expandableConfig = {
     expandedRowRender: this.InnerTable,
-    rowExpandable: (record:Item) => record.schemaType == "Object",
+    rowExpandable: (record:IDataSource) => record.type == "Object",
     defaultExpandAllRows:true
   };
 
   handleSubmit = async () => {
     const { apiStore } = this.props;
-    await apiStore.getMockApi();
+    await apiStore.handleMockApi();
+    await apiStore.getAllMockApi()
   };
 
   render() {
@@ -323,7 +305,7 @@ class EditableTable extends React.Component {
           components={this.components}
           rowClassName={(record) => "editable-row"}
           bordered
-          dataSource={this.defaultApi.dataSource}
+          dataSource={this.props.apiStore.dataSource}
           columns={this.columnsNode}
           // expandable={this.expandableConfig}
         />

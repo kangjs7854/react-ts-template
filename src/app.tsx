@@ -25,7 +25,7 @@ class App extends React.Component  {
           <Header className="header">
             <div className="logo" />
             <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
-              <Menu.Item key="1">api mock</Menu.Item>
+              <Menu.Item key="1">可视化配置api</Menu.Item>
             </Menu>
           </Header>
           <Content style={{ padding: "0 50px" }}>
@@ -47,7 +47,7 @@ class App extends React.Component  {
           </Content>
           <Footer style={{ textAlign: "center" }}>
             Ant Design ©2018 Created by Ant UED
-            <Counter />
+            {/*<Counter />*/}
           </Footer>
         </Layout>
       </div>

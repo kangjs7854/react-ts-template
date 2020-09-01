@@ -10,17 +10,18 @@ const http = new Http();
 
 let baseUrl:string = process.env.NODE_ENV == 'production' ? 'http://175.24.20.162:32775/api/mock' : 'http://localhost:3000/api/mock'
 
+
 export default {
-    getMockApi(url:string, params:any) {
-        return http.post(baseUrl + '/' + url, params)
+    getMockApi(params:IParams) {
+        return http.post(baseUrl + '/' + params.apiName, params)
     },
 
     getAllMockApi() {
         return http.get(baseUrl)
     },
 
-    deleteMockApi(url:string){
-        return http.delete(baseUrl,{url})
+    deleteMockApi(apiName:string){
+        return http.delete(baseUrl,{apiName})
     }
 
 }

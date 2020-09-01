@@ -2,23 +2,13 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import { Input, Button, Select, Row, Col, Divider, notification } from "antd";
 import SchemaTable from "@/components/SchemaTable";
-import ApiStore from '@/store/api'
-<<<<<<< HEAD
 import "./index.scss";
 import { CopyOutlined } from '@ant-design/icons';
 
-=======
->>>>>>> e888b455798d489fa5326a3a4da867e53f4101d2
-import {render} from "react-dom";
-const { Option } = Select;
-
-interface IProps{
-  apiStore:ApiStore
-}
 
 @inject("apiStore")
 @observer
-class FormSizeDemo extends React.Component<IProps> {
+class FormSizeDemo extends React.Component  <{ apiStore:apiStore }>{
 
   handleCopy = () => {
     const activeCodeSpan = document.getElementById("mock-url") as HTMLElement;
@@ -27,11 +17,7 @@ class FormSizeDemo extends React.Component<IProps> {
     range.selectNode(activeCodeSpan);
     window.getSelection()?.addRange(range);
     const tag = document.execCommand("Copy");
-    if (tag) {
-      notification.success({ message: "复制成功" });
-    } else {
-      // notification.fail("复制失败");
-    }
+    tag && notification.success({ message: "复制成功" });
     window.getSelection()?.removeAllRanges();
   };
 
@@ -44,28 +30,27 @@ class FormSizeDemo extends React.Component<IProps> {
             <Input
                 className="input-wrap"
                 placeholder="api名称"
-                value={apiStore.defaultApi.url}
+                value={apiStore.apiName}
                 onChange={(e) =>
-                    apiStore.updateDefaultApi({ url: e.target.value })
+                    apiStore.updateApiName(e.target.value)
                 }
             />
-            {apiStore.defaultApi.url && (
+            {apiStore.apiName && (
                 <>
-                    <span id="mock-url">{apiStore.baseUrl+apiStore.defaultApi.url}</span>
+                    <span id="mock-url">{apiStore.baseUrl+apiStore.apiName}</span>
                     <Button className='copy-btn' type="primary" shape="round" onClick={this.handleCopy} icon={<CopyOutlined />}  >复制</Button>
                 </>
             )}
         </div>
         <Divider orientation="left">定义数据结构</Divider>
         <SchemaTable />
-        <Divider orientation="left">mock api</Divider>
 
-        {apiStore.defaultApi.response.data ? (
+        {apiStore.responseJson?.data? (
           <>
-            <Divider orientation="left">响应数据：</Divider>
+              <Divider orientation="left">响应数据：</Divider>
 
             <pre className="language-bash">
-              {JSON.stringify(apiStore.defaultApi.response, null, 2)}
+              {JSON.stringify(apiStore.responseJson, null, 2)}
             </pre>
           </>
         ) : null}

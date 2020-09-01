@@ -1,26 +1,26 @@
 import React, { Component } from "react";
-import {Badge, Menu, Tag} from "antd";
+import {Badge, Menu, Tag,Empty } from "antd";
 import { observer, inject } from "mobx-react";
 import ApiStore from "@/store/api";
 
 @inject("apiStore")
 @observer
 export default class ApiList extends Component<{ apiStore: ApiStore }> {
+
   componentDidMount() {
     this.props.apiStore.getAllMockApi();
   }
 
-  async handleDelete(url: string, e: any) {
+  async handleDelete(apiName: string, e: any) {
     e.preventDefault();
-    this.props.apiStore.deleteMockApi(url);
+    this.props.apiStore.deleteMockApi(apiName);
   }
 
-  handleChooseApi(url: string) {
-    this.props.apiStore.handleChooseApi(url);
+  handleChooseApi(apiName: string) {
+    this.props.apiStore.handleChooseApi(apiName);
   }
 
   render() {
-    const { apiList } = this.props.apiStore;
 
     return (
       <Menu
@@ -29,26 +29,27 @@ export default class ApiList extends Component<{ apiStore: ApiStore }> {
         defaultOpenKeys={["sub1"]}
         style={{ height: "100%" }}
       >
-        <Badge className="badge" count={apiList.length} title="当前api个数">
+        <Badge className="badge" count={this.props.apiStore.apiList?.length} title="当前api个数">
           <a href="#" className="head-example" />
         </Badge>
-        {Array.isArray(apiList) &&
-          apiList.map((el, index: number) => {
+        {this.props.apiStore.apiList.length?
+            this.props.apiStore.apiList.map((el, index: number) => {
             return (
               <Menu.Item
                 key={index}
-                onClick={() => this.handleChooseApi(el.url)}
+                onClick={() => this.handleChooseApi(el.apiName)}
               >
-                <Tag color="#2db7f5">{el.methods}</Tag>
+                <Tag color="#2db7f5">{el.method}</Tag>
                 <Tag
                   closable
-                  onClose={(e: any) => this.handleDelete(el.url, e)}
+                  onClose={(e: any) => this.handleDelete(el.apiName, e)}
                 >
-                  {el.url}
+                  {el.apiName}
                 </Tag>
               </Menu.Item>
             );
-          })}
+          }):<Empty description='暂无数据' />
+        }
       </Menu>
     );
   }
