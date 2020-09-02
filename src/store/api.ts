@@ -26,6 +26,18 @@ class ApiStore {
       value: "18",
       type: "Number",
     },
+    {
+      key: "card",
+      value: [
+        {
+          key:"cardNo",
+          value:"78543785",
+          type:'String'
+        },
+
+      ],
+      type: "Object",
+    },
   ]
   @observable responseJson:any = {}
 

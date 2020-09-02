@@ -8,15 +8,17 @@
 import { hot } from 'react-hot-loader/root';
 
 import React, { FC } from "react";
-import { Layout, Menu, Breadcrumb } from "antd";
+import {observer} from 'mobx-react';
+import DevTools from 'mobx-react-devtools'
 
+import { Layout, Menu, Breadcrumb } from "antd";
 import ApiList from "@/components/ApiList";
 import ApiForm from "@/components/ApiForm";
 import Counter from '@/components/Counter'
 
 const { Header, Content, Footer, Sider } = Layout;
 
-
+@observer
 class App extends React.Component  {
   render(){
     return (
@@ -47,9 +49,10 @@ class App extends React.Component  {
           </Content>
           <Footer style={{ textAlign: "center" }}>
             Ant Design ©2018 Created by Ant UED
-            {/*<Counter />*/}
+            {process.env.NODE_ENV !== 'production' ? <DevTools /> : null}
           </Footer>
         </Layout>
+
       </div>
     );
   }

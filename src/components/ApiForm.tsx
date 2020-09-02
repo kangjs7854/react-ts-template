@@ -48,7 +48,6 @@ class FormSizeDemo extends React.Component  <{ apiStore:apiStore }>{
         {apiStore.responseJson?.data? (
           <>
               <Divider orientation="left">响应数据：</Divider>
-
             <pre className="language-bash">
               {JSON.stringify(apiStore.responseJson, null, 2)}
             </pre>

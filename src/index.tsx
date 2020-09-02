@@ -21,7 +21,7 @@ const stores={
 }
 ReactDOM.render(
   <Provider {...stores}>
-    <App />
+      <App> </App>
   </Provider>,
   document.querySelector("#root")
 );

@@ -1,5 +1,5 @@
 import "./index.scss";
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {useContext, useState, useEffect, useRef, ReactElement} from "react";
 import {
   Table,
   Input,
@@ -7,15 +7,11 @@ import {
   Popconfirm,
   Form,
   Select,
-  Row,
-  Col,
   Tag,
   notification,
-  Dropdown,
-  Badge,
-  Space,
   Tooltip
 } from "antd";
+import { FallOutlined ,PlusOutlined} from '@ant-design/icons';
 
 import { observer, inject } from "mobx-react";
 
@@ -24,10 +20,6 @@ const { Option } = Select;
 const EditableContext = React.createContext<any>("");
 
 
-
-interface EditableRowProps {
-  index: number;
-}
 
 const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   const [form] = Form.useForm();
@@ -40,14 +32,6 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   );
 };
 
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  children: React.ReactNode;
-  dataIndex: string;
-  record: IDataSource;
-  handleSave: (record: IDataSource) => void;
-}
 
 const EditableCell: React.FC<EditableCellProps> = ({
   title,
@@ -113,12 +97,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
             <Option value="Array">Array</Option>
           </Select>
         ) : (
-          <Input
-            ref={inputRef}
-            onPressEnter={save}
-            onBlur={save}
-            placeholder="请输入"
-          />
+           <Input
+                ref={inputRef}
+                onPressEnter={save}
+                onBlur={save}
+                placeholder="请输入"
+            />
         )}
       </Form.Item>
     ) : (
@@ -167,30 +151,37 @@ class EditableTable extends React.Component<IProps> {
       dataIndex: "value",
       width: "30%",
       editable: true,
+      render(text:string,record:IDataSource){
+        return record.type == 'Object'
+            ? <FallOutlined className='obj-icon' rotate={90} />
+            : <p>{text}</p>
+      }
     },
     {
       title: "操作",
       dataIndex: "operation",
       render: (text: string, record: IDataSource) =>
         this.props.apiStore.dataSource.length >= 1 ? (
-          <Row align="middle">
-            <Col>
-              <Popconfirm
-                title="确定删除?"
-                onConfirm={() => this.handleDelete(record.key)}
-              >
-                <a>删除</a>
-              </Popconfirm>
-            </Col>
-            <Col push="6">
-              <Tooltip title="根据主键作为数据修改的标识">
-                <Button shape='round' onClick={() => this.handleSetUnique(record)}>
-                  设为主键
-                </Button>
-              </Tooltip>
+             <div className='center'>
+               <Popconfirm
+                   title="确定删除?"
+                   onConfirm={() => this.handleDelete(record.key)}
+               >
+                 <a>删除</a>
+               </Popconfirm>
+               {
+                 record.isInner
+                     ? <Tooltip className='copy-btn' title="添加多一行">
+                        <PlusOutlined onClick={()=>this.handleAddInner(record)}/>
+                       </Tooltip>
+                     : <Tooltip className='copy-btn' title="根据主键作为数据修改的标识">
+                         <Button shape='round' onClick={() => this.handleSetUnique(record)}>
+                           设为主键
+                         </Button>
+                       </Tooltip>
+               }
+             </div>
 
-            </Col>
-          </Row>
         ) : null,
     },
   ];
@@ -246,6 +237,22 @@ class EditableTable extends React.Component<IProps> {
     this.props.apiStore.updateDataSource(newDataSource)
   };
 
+  handleAddInner(record:IDataSource){
+    const {dataSource} = this.props.apiStore
+    const newDataSource = dataSource
+    newDataSource.map(el=>{
+      if(Array.isArray(el.value) && el.value.some(innerEl=>innerEl.key == record.key)){
+        return el.value = [...el.value,{
+          key:"cardType",
+          value:"就诊卡",
+          type:'String'
+        }]
+      }
+    })
+    console.dir(newDataSource)
+    this.props.apiStore.updateDataSource(newDataSource.slice())
+  }
+
   handleSave = (row:IDataSource) => {
     const newData = this.props.apiStore.dataSource;
     const index = newData.findIndex((item) => row.key === item.key);
@@ -258,13 +265,9 @@ class EditableTable extends React.Component<IProps> {
   };
 
   InnerTable = () => {
-    const InnerTableDataSource = [
-      {
-        type: `String`,
-        key: "",
-        value: ``,
-      },
-    ];
+    const InnerTableDataSource = this.props.apiStore.dataSource.find(el=>el.type == 'Object')?.value as IDataSource[]
+    //添加嵌套子表格的标识
+    InnerTableDataSource.map(el=>el.isInner = true)
     return (
       <Table
         components={this.components}
@@ -281,7 +284,8 @@ class EditableTable extends React.Component<IProps> {
   private expandableConfig = {
     expandedRowRender: this.InnerTable,
     rowExpandable: (record:IDataSource) => record.type == "Object",
-    defaultExpandAllRows:true
+    defaultExpandAllRows:true,
+    expandRowByClick:true
   };
 
   handleSubmit = async () => {
@@ -307,11 +311,10 @@ class EditableTable extends React.Component<IProps> {
           bordered
           dataSource={this.props.apiStore.dataSource}
           columns={this.columnsNode}
-          // expandable={this.expandableConfig}
+          expandable={this.expandableConfig}
         />
       </div>
     );
   }
 }
-
 export default EditableTable;
