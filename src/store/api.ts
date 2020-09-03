@@ -28,11 +28,13 @@ class ApiStore {
     },
     {
       key: "card",
-      value: [
+      value:"",
+      children: [
         {
           key:"cardNo",
           value:"78543785",
-          type:'String'
+          type:'String',
+          isInner:true
         },
 
       ],

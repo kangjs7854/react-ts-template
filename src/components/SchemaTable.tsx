@@ -148,14 +148,14 @@ class EditableTable extends React.Component<IProps> {
     },
     {
       title: "默认值",
-      dataIndex: "value",
+      dataIndex: 'value',
       width: "30%",
       editable: true,
-      render(text:string,record:IDataSource){
-        return record.type == 'Object'
-            ? <FallOutlined className='obj-icon' rotate={90} />
-            : <p>{text}</p>
-      }
+      // render(text:string,record:IDataSource){
+      //   return record.type == 'Object'
+      //       ? <FallOutlined className='obj-icon' rotate={90} />
+      //       : <p>{text}</p>
+      // }
     },
     {
       title: "操作",
@@ -165,7 +165,11 @@ class EditableTable extends React.Component<IProps> {
              <div className='center'>
                <Popconfirm
                    title="确定删除?"
-                   onConfirm={() => this.handleDelete(record.key)}
+                   onConfirm={() => {
+                     record.isInner
+                         ? this.handleDeleteInner(record.key)
+                         : this.handleDelete(record.key)
+                   }}
                >
                  <a>删除</a>
                </Popconfirm>
@@ -227,6 +231,20 @@ class EditableTable extends React.Component<IProps> {
     this.props.apiStore.updateDataSource(newDataSource)
   };
 
+  handleDeleteInner = (key:string) =>{
+    const {dataSource} = this.props.apiStore
+    const newDataSource = dataSource
+    newDataSource.map(el=>{
+      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.key == key)){
+        console.log(el.children.filter(innerEl=>innerEl.key != key))
+        return el.children  = el.children.filter(innerEl=>innerEl.key != key)
+      }
+    })
+    console.log(newDataSource)
+    this.props.apiStore.updateDataSource(newDataSource.slice())
+
+  }
+
   handleAdd = () => {
     const newData = {
       key: ``,
@@ -237,24 +255,25 @@ class EditableTable extends React.Component<IProps> {
     this.props.apiStore.updateDataSource(newDataSource)
   };
 
-  handleAddInner(record:IDataSource){
+  handleAddInner = (record:IDataSource) => {
     const {dataSource} = this.props.apiStore
     const newDataSource = dataSource
     newDataSource.map(el=>{
-      if(Array.isArray(el.value) && el.value.some(innerEl=>innerEl.key == record.key)){
-        return el.value = [...el.value,{
-          key:"cardType",
-          value:"就诊卡",
-          type:'String'
+      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.key == record.key)){
+        return el.children = [...el.children,{
+          key:"子表格的key" + el.children.length,
+          value:"",
+          type:'String',
+          isInner:true,
         }]
       }
     })
-    console.dir(newDataSource)
     this.props.apiStore.updateDataSource(newDataSource.slice())
   }
 
   handleSave = (row:IDataSource) => {
     const newData = this.props.apiStore.dataSource;
+    debugger
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, {
@@ -264,29 +283,7 @@ class EditableTable extends React.Component<IProps> {
     this.props.apiStore.updateDataSource(newData.slice())
   };
 
-  InnerTable = () => {
-    const InnerTableDataSource = this.props.apiStore.dataSource.find(el=>el.type == 'Object')?.value as IDataSource[]
-    //添加嵌套子表格的标识
-    InnerTableDataSource.map(el=>el.isInner = true)
-    return (
-      <Table
-        components={this.components}
-        columns={this.columnsNode}
-        rowClassName={(record) => "editable-row"}
-        bordered
-        dataSource={InnerTableDataSource}
-        pagination={false}
-      />
-    );
-  };
 
-  //嵌套表格的配置
-  private expandableConfig = {
-    expandedRowRender: this.InnerTable,
-    rowExpandable: (record:IDataSource) => record.type == "Object",
-    defaultExpandAllRows:true,
-    expandRowByClick:true
-  };
 
   handleSubmit = async () => {
     const { apiStore } = this.props;
@@ -311,7 +308,6 @@ class EditableTable extends React.Component<IProps> {
           bordered
           dataSource={this.props.apiStore.dataSource}
           columns={this.columnsNode}
-          expandable={this.expandableConfig}
         />
       </div>
     );

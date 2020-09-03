@@ -31,9 +31,10 @@ interface IApiList {
 interface IDataSource {
     key: string;
     value: string | IDataSource[];
+    children?:IDataSource[]
     type: string;
     unique?:boolean
-    isInner?:boolean
+    isInner?:boolean,
 }
 interface IParams{
     apiName:string| number,
