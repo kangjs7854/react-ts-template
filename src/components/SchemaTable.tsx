@@ -167,8 +167,8 @@ class EditableTable extends React.Component<IProps> {
                    title="确定删除?"
                    onConfirm={() => {
                      record.isInner
-                         ? this.handleDeleteInner(record.key)
-                         : this.handleDelete(record.key)
+                         ? this.handleDeleteInner(record)
+                         : this.handleDelete(record)
                    }}
                >
                  <a>删除</a>
@@ -226,23 +226,30 @@ class EditableTable extends React.Component<IProps> {
     notification.success({ message: "设置" + e.key + "为标识的key成功" });
   };
 
-  handleDelete = (key: string) => {
-    const newDataSource = this.props.apiStore.dataSource.filter(el=>el.key!=key)
+  handleDelete = (record: IDataSource) => {
+    const newDataSource = this.props.apiStore.dataSource.filter(el=>el.id != record.id)
     this.props.apiStore.updateDataSource(newDataSource)
   };
 
-  handleDeleteInner = (key:string) =>{
+  handleDeleteInner = (record: IDataSource) =>{
     const {dataSource} = this.props.apiStore
     const newDataSource = dataSource
     newDataSource.map(el=>{
-      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.key == key)){
-        console.log(el.children.filter(innerEl=>innerEl.key != key))
-        return el.children  = el.children.filter(innerEl=>innerEl.key != key)
+      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.id == record.id)){
+        console.log(el.children.filter(innerEl=>innerEl.id != record.id))
+        return el.children  = el.children.filter(innerEl=>innerEl.id != record.id)
       }
     })
     console.log(newDataSource)
     this.props.apiStore.updateDataSource(newDataSource.slice())
 
+  }
+  createUniqueId() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      let r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   handleAdd = () => {
@@ -250,6 +257,7 @@ class EditableTable extends React.Component<IProps> {
       key: ``,
       value: "",
       type: `String`,
+      id:this.createUniqueId()
     };
     const newDataSource = [...this.props.apiStore.dataSource,newData]
     this.props.apiStore.updateDataSource(newDataSource)
@@ -259,8 +267,9 @@ class EditableTable extends React.Component<IProps> {
     const {dataSource} = this.props.apiStore
     const newDataSource = dataSource
     newDataSource.map(el=>{
-      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.key == record.key)){
+      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.id == record.id)){
         return el.children = [...el.children,{
+          id:this.createUniqueId(),
           key:"子表格的key" + el.children.length,
           value:"",
           type:'String',
@@ -272,15 +281,27 @@ class EditableTable extends React.Component<IProps> {
   }
 
   handleSave = (row:IDataSource) => {
-    const newData = this.props.apiStore.dataSource;
-    debugger
-    const index = newData.findIndex((item) => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {
-      ...item,
-      ...row,
-    });
-    this.props.apiStore.updateDataSource(newData.slice())
+    const newDataSource = this.props.apiStore.dataSource;
+      const index = newDataSource.findIndex((item) => row.id === item.id);
+      if(index == -1){
+        newDataSource.map(el=>{
+          if(el.children?.some(innerEl=>innerEl.id == row.id)){
+            const innerIndex = el.children?.findIndex(innerEl=>innerEl.id == row.id)
+            const innerItem = el.children[innerIndex]
+            return el.children?.splice(innerIndex,1,{
+              ...innerItem,
+              ...row
+            })
+          }
+        })
+      }else{
+        const item = newDataSource[index];
+        newDataSource.splice(index, 1, {
+          ...item,
+          ...row,
+        });
+      }
+      this.props.apiStore.updateDataSource(newDataSource.slice())
   };
 
 

@@ -16,21 +16,25 @@ class ApiStore {
   @observable apiList: IApiList[] = [];
   @observable dataSource:IDataSource[] = [
     {
+      id:1,
       key: "name",
       value: "张三",
       type: "String",
       unique:true
     },
     {
+      id:2,
       key: "age",
       value: "18",
       type: "Number",
     },
     {
+      id:3,
       key: "card",
       value:"",
       children: [
         {
+          id:4,
           key:"cardNo",
           value:"78543785",
           type:'String',
