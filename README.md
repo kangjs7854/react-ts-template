@@ -1,14 +1,63 @@
-<!--
- * @Date: 2020-08-20 09:50:07
- * @LastEditors: kjs
- * @LastEditTime: 2020-08-20 10:09:18
- * @FilePath: \react-ts-template\README.md
--->
-# react+ts的项目模板
-> 本想使用umi来快速生成项目模板，开发自己一个mock api的平台，但是umi实在太重了，而且很多东西都是目前不需要的。就从零开始自己配置一个，也顺便复习一下webpack
+# 为什么需要这样一个mock的平台？
+
+在项目的开发过程中，接口的联调是至关重要的一环，但是我们会遇到很多不可控的情况，例如前后端开发进度不一样，所需要的数据字段不够明确，这个时候就需要接口mock，在前后端的开发者拟定好协议，整理好所需要的数据字段之后快速进行接口mock，在正式联调接口时以更高的效率交付产品。
+
+使用当前比较流行的mock的库，类似于yapi，mockjs等等，我们团队目前使用的是api fox，一个比较新的拟定接口协议，管理接口文档，进行接口mock的桌面端工具。
+
+但是很快我就遇到了这几个问题：
+
+1. **mock返回无意义的数据**  
+使用第三方的mock功能，返回的数据字段大部分都是一堆没有意义的字符串，虽然能理解这是为了能够快速进行接口mock，但确实不够优雅  
+
+    解决方法：开发自己的node服务
+
+2. **如何快速开发curd的接口**    
+作为前端开发的人员，选择使用node来开发服务特别合适，不需要去学习额外的编程语言，而且可以扩展自己在网络数据库之类的知识面，可以更加全面的去思考业务  
+
+    解决方法：通过封装增删改查的controller，实现了只要传入所需的数据名称和类型，就可以生成增删改查的restful风格的api。
+    具体实现可以查看这个项目：![node-server-template](https://github.com/kangjs7854/node-server-template)
+
+
+3. **在移动端项目接口无法使用**  
+这是因为node服务始终还是一个本地运行的web服务器，需要通过部署到线上来实现移动端也可以访问，虽然可以通过笔记本和手机连同一个局域网实现该功能，但还是不够快捷方便。  
+
+    解决方法：通过部署node服务到线上服务器
+
+4. **每次增加接口都要在修改代码后重新部署**  
+
+    解决方法：搭一个可视化配置数据名称，数据类型，传入默认值，然后就能返回响应数据的平台
+
+5. **如何实现**   
+一般情况下，要操作数据库得通过下面几个步骤
+- 定义模式Schema,描述数据的结构和行为
+- 通过模式生成数据的模型，基本上对数据库的操作都要通过该模型
+- 通过模型进行增删改查的操作  
+
+    所以我们的难点在于：如何动态定义模式，也就是定义我们所需要字段的名称，数据类型。  
+    查阅了mongoose的文档之后发现，确实可以通过动态生成数据的模式。那接下来的事情就比较简单了  
+
+    解决方法：在前端将所需要的Schema的字段名称和类型作为参数的一部分传入到node服务端，服务端接收到后调用```Schema原型上的add方法```动态添加数据结构，再通过生成数据模型，将其作为参数传入给封装好的controller类，生成快速进行增删改查的实例
+
+```js
+//核心代码
+   const {Schema,uniqueKey} = req.body
+   const query = { [uniqueKey]:req.body[uniqueKey] } //匹配条件,根据什么字段进行插入或者更新
+   const payload = { ...req.body } //内容
+   const modelName = req.originalUrl.slice(10)
+   //动态添加schema的字段和数据类型
+   mockSchema.add(Schema)
+   //再生成模型
+   const mockModel = mongoose.model(modelName,mockSchema)
+   //传入该模型生成控制器
+   const mockController = new Controller(mockModel)
+   const data = await mockController.insert(query, payload)
+   res.json({data})
+
+```
+
+
 
 # webpack
-
 项目把webpack的相关配置放在了```config```文件夹。主要分为三个配置
 - webpack.common.js 
 - webpack.dev.js
