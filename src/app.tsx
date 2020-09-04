@@ -6,53 +6,20 @@
 //  */
 
 import { hot } from 'react-hot-loader/root';
-
-import React, { FC } from "react";
+import React from "react";
+import Routes from '@/routes'
 import {observer} from 'mobx-react';
 import DevTools from 'mobx-react-devtools'
 
-import { Layout, Menu, Breadcrumb } from "antd";
-import ApiList from "@/components/ApiList";
-import ApiForm from "@/components/ApiForm";
-import Counter from '@/components/Counter'
 
-const { Header, Content, Footer, Sider } = Layout;
 
 @observer
 class App extends React.Component  {
   render(){
     return (
       <div className="App">
-        <Layout>
-          <Header className="header">
-            <div className="logo" />
-            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
-              <Menu.Item key="1">可视化配置api</Menu.Item>
-            </Menu>
-          </Header>
-          <Content style={{ padding: "0 50px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-            </Breadcrumb>
-            <Layout
-              className="site-layout-background"
-              style={{ padding: "24px 0" }}
-            >
-              <Sider className="site-layout-background" width={200}>
-                <ApiList />
-              </Sider>
-              <Content style={{ padding: "0 24px", minHeight: 280 }}>
-                <ApiForm />
-              </Content>
-            </Layout>
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
+            <Routes />
             {process.env.NODE_ENV !== 'production' ? <DevTools /> : null}
-          </Footer>
-        </Layout>
-
       </div>
     );
   }

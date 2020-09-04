@@ -22,6 +22,11 @@ export default {
 
     deleteMockApi(apiName:string){
         return http.delete(baseUrl,{apiName})
+    },
+
+    sendAuthCode(code:string){
+        return http.post('http://localhost:3000/api/auth',{code})
+
     }
 
 }

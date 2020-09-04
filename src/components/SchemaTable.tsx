@@ -166,9 +166,7 @@ class EditableTable extends React.Component<IProps> {
                <Popconfirm
                    title="确定删除?"
                    onConfirm={() => {
-                     record.isInner
-                         ? this.handleDeleteInner(record)
-                         : this.handleDelete(record)
+                      this.handleDelete(record)
                    }}
                >
                  <a>删除</a>
@@ -227,23 +225,21 @@ class EditableTable extends React.Component<IProps> {
   };
 
   handleDelete = (record: IDataSource) => {
-    const newDataSource = this.props.apiStore.dataSource.filter(el=>el.id != record.id)
-    this.props.apiStore.updateDataSource(newDataSource)
+    const {dataSource} = this.props.apiStore
+    let newDataSource = dataSource
+    if(record.isInner){
+      newDataSource.map(el=>{
+        if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.id == record.id)){
+          console.log(el.children.filter(innerEl=>innerEl.id != record.id))
+          return el.children  = el.children.filter(innerEl=>innerEl.id != record.id)
+        }
+      })
+    }else{
+      newDataSource = dataSource.filter(el=>el.id != record.id)
+    }
+    this.props.apiStore.updateDataSource(newDataSource.slice())
   };
 
-  handleDeleteInner = (record: IDataSource) =>{
-    const {dataSource} = this.props.apiStore
-    const newDataSource = dataSource
-    newDataSource.map(el=>{
-      if(Array.isArray(el.children) && el.children.some(innerEl=>innerEl.id == record.id)){
-        console.log(el.children.filter(innerEl=>innerEl.id != record.id))
-        return el.children  = el.children.filter(innerEl=>innerEl.id != record.id)
-      }
-    })
-    console.log(newDataSource)
-    this.props.apiStore.updateDataSource(newDataSource.slice())
-
-  }
   createUniqueId() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       let r = (Math.random() * 16) | 0,
@@ -303,8 +299,6 @@ class EditableTable extends React.Component<IProps> {
       }
       this.props.apiStore.updateDataSource(newDataSource.slice())
   };
-
-
 
   handleSubmit = async () => {
     const { apiStore } = this.props;
