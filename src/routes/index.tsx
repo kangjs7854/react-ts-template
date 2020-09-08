@@ -1,21 +1,49 @@
 //HashRouter  (./router/index.tsx)
 import React, { Component } from 'react';
-import { HashRouter, Switch, Route } from 'react-router-dom';
+import { HashRouter, Switch, Route, Redirect ,withRouter, } from 'react-router-dom';
 import Home from '@/pages/Home'
 import Login from  '@/pages/login'
 import Error from '@/pages/Error'
-export default class RouteConfig extends Component {
+import Counter from '@/components/Counter'
+import AuthResult from "@/pages/AuthResult";
+
+const routes = [
+    {
+        path:"/",
+        exact: true,
+        component:Home,
+        routes:[
+            {
+                path:"/counter",
+                component:Counter
+            }
+        ]
+    },
+    {
+        path:"/login",
+        component:Login,
+    },
+    {
+        path:"/authResult",
+        component: AuthResult
+    },
+    {
+        path:"/*",
+        component:Error,
+    },
+]
+class renderRoutes extends Component {
 
     render(){
-        return(
-            <HashRouter>
-                <Switch>
-                    <Route path="/" exact component={Home}></Route>
-                    <Route path="/error" component={Error}></Route>
-                    <Route path="/login" component={Login}></Route>
+        const isLogin = sessionStorage.getItem('isLogin')
+        return  <Switch>
+            { routes.map(el => <Route  exact={el.exact} path={el.path} render={props => (
+                    <el.component {...props} routes={el.routes} />
+                )}/>)}
+        </Switch>
 
-                </Switch>
-            </HashRouter>
-        )
     }
 }
+
+export default withRouter(renderRoutes)
+

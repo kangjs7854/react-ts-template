@@ -120,7 +120,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 interface IProps{
-  apiStore:apiStore,
+  apiStore:IApiStore,
 }
 
 @inject("apiStore")

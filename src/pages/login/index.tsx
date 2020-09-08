@@ -25,7 +25,7 @@ export default  class Login extends  React.Component<any, IState>{
 
     handleAuth = ()=>{
         // window.location.href= 'https://github.com/login/oauth/authorize?client_id=50ab343567bd310005df&redirect_uri=http://localhost:3000/api/auth'
-        window.location.href= 'https://github.com/login/oauth/authorize?client_id=50ab343567bd310005df&redirect_uri=http://127.0.0.1:9000'
+        window.location.href= 'https://github.com/login/oauth/authorize?client_id=50ab343567bd310005df&redirect_uri=http://127.0.0.1:9000/#/authResult'
 
 
     }

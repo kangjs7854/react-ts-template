@@ -5,7 +5,7 @@ import ApiStore from "@/store/api";
 
 @inject("apiStore")
 @observer
-export default class ApiList extends Component<{ apiStore: ApiStore }> {
+export default class ApiList extends Component<{ apiStore: IApiStore }> {
 
   componentDidMount() {
     this.props.apiStore.getAllMockApi();

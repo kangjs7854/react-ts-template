@@ -10,6 +10,7 @@ import App from "./app";
 import { Provider } from "mobx-react";
 import CountStore from '@/store/count'
 import ApiStore from "@/store/api";
+import UserStore from '@/store/user'
 
 if (module && module.hot) {
   module.hot.accept();
@@ -17,7 +18,8 @@ if (module && module.hot) {
 
 const stores={
   countStore:new CountStore(),
-  apiStore:new ApiStore()
+  apiStore:new ApiStore(),
+  userStore:new UserStore()
 }
 ReactDOM.render(
   <Provider {...stores}>

@@ -8,7 +8,7 @@ import { CopyOutlined } from '@ant-design/icons';
 
 @inject("apiStore")
 @observer
-class FormSizeDemo extends React.Component  <{ apiStore:apiStore }>{
+class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
 
   handleCopy = () => {
     const activeCodeSpan = document.getElementById("mock-url") as HTMLElement;

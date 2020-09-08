@@ -1,7 +1,8 @@
-declare class apiStore{
+declare class IApiStore{
     baseUrl :string
     apiName:string
 
+    apiList:IApiList[]
     dataSource:IDataSource[]
     responseJson:any
 

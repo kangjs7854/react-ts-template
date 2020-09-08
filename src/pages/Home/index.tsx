@@ -7,45 +7,25 @@ import api from '@/api/index'
 const { Header, Content, Footer, Sider } = Layout;
 import {UserOutlined} from '@ant-design/icons';
 import './index.scss'
+import {inject, observer} from "mobx-react";
 
-export default  class Home extends React.Component<any, any>{
-    constructor(props) {
-        super(props);
-        this.state = {
-            userInfo:{}
-        }
-    }
+@inject('userStore')
+@observer
+export default class Home extends React.Component<{userStore:IUserStore}, any>{
 
-    async componentDidMount() {
-        const code = this.getUrlParams('code')
-        if(!code) return
-        const res = await api.sendAuthCode(code)
-        this.setState({
-            userInfo:res
-        })
-    }
-
-    getUrlParams(param:string){
-        const str = location.search.substr(1)
-        const arr = str.split('&')
-        let res = ''
-        arr.forEach(el=>{
-            const paramsArr = el.split('=')
-            if( paramsArr[0] == param ){
-                res = paramsArr[1]
-            }
-        })
-        return res
+    componentDidMount() {
+        const isLogin = sessionStorage.getItem('isLogin')
+        if(isLogin == 'false') return this.props.history.push('/login')
     }
 
     jumpToGitHub = ()=>{
-        const {userInfo} = this.state
-        userInfo.url ? window.location.href = userInfo.html_url
+        const {userInfo} = this.props.userStore
+        userInfo.html_url ? window.location.href = userInfo.html_url
                      : this.props.history.push('/login')
     }
 
     render() {
-        const {userInfo} = this.state
+        const {userInfo} = this.props.userStore
         return <Layout>
             <Header className="header">
                 <div className="logo" />

@@ -10,6 +10,7 @@ import React from "react";
 import Routes from '@/routes'
 import {observer} from 'mobx-react';
 import DevTools from 'mobx-react-devtools'
+import { HashRouter } from 'react-router-dom';
 
 
 
@@ -18,7 +19,9 @@ class App extends React.Component  {
   render(){
     return (
       <div className="App">
-            <Routes />
+          <HashRouter>
+                <Routes />
+          </HashRouter>
             {process.env.NODE_ENV !== 'production' ? <DevTools /> : null}
       </div>
     );
