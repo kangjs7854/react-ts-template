@@ -23,6 +23,7 @@ export  default class AuthResult extends React.Component<{userStore:IUserStore},
         }else{
             this.props.userStore.updateUserInfo(res)
             sessionStorage.setItem('isLogin','true')
+            sessionStorage.setItem('userInfo',JSON.stringify(res))
             this.props.history.push("/")
         }
         this.setState({loading:false})

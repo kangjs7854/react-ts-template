@@ -307,6 +307,10 @@ class EditableTable extends React.Component<IProps> {
   };
 
   render() {
+    let {dataSource} = this.props.apiStore
+    dataSource.forEach(el=>{
+      el.children && el.children.length == 0 && delete el.children
+    })
     return (
       <div>
         <div className='row button-wrap'>
@@ -321,7 +325,7 @@ class EditableTable extends React.Component<IProps> {
           components={this.components}
           rowClassName={(record) => "editable-row"}
           bordered
-          dataSource={this.props.apiStore.dataSource}
+          dataSource={dataSource}
           columns={this.columnsNode}
         />
       </div>

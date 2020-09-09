@@ -69,6 +69,8 @@ class ApiStore {
 
   async deleteMockApi(apiName: string) {
     const res:IApiList[] = await api.deleteMockApi(apiName);
+    if(!res)return
+    notification.success({message:"删除成功"})
     this.updateApiList(res);
   }
 

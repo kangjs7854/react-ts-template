@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import {Badge, Menu, Tag,Empty } from "antd";
+import {Badge, Menu, Tag, Empty, Modal} from "antd";
 import { observer, inject } from "mobx-react";
-import ApiStore from "@/store/api";
+import './index.scss'
+import { DeleteOutlined } from '@ant-design/icons';
 
 @inject("apiStore")
 @observer
@@ -11,10 +12,6 @@ export default class ApiList extends Component<{ apiStore: IApiStore }> {
     this.props.apiStore.getAllMockApi();
   }
 
-  async handleDelete(apiName: string, e: any) {
-    e.preventDefault();
-    this.props.apiStore.deleteMockApi(apiName);
-  }
 
   handleChooseApi(apiName: string) {
     this.props.apiStore.handleChooseApi(apiName);
@@ -40,12 +37,29 @@ export default class ApiList extends Component<{ apiStore: IApiStore }> {
                 onClick={() => this.handleChooseApi(el.apiName)}
               >
                 <Tag color="#2db7f5">{el.method}</Tag>
-                <Tag
-                  closable
-                  onClose={(e: any) => this.handleDelete(el.apiName, e)}
-                >
-                  {el.apiName}
-                </Tag>
+                  <span style={{
+                    width:"90px",
+                    display:"inline-block"
+                  }}>
+                    {el.apiName}
+                  </span>
+                  <DeleteOutlined onClick={(e)=>{
+                    e.preventDefault()
+                    this.props.apiStore.deleteMockApi(el.apiName);
+                  }} />
+                {/*<Tag*/}
+                {/*  closable*/}
+                {/*  onClose={(e: any) => {*/}
+                {/*    Modal.confirm({*/}
+                {/*      title:"确定删除?",*/}
+                {/*      onOk:()=>{*/}
+                {/*        this.handleDelete(el.apiName, e)*/}
+                {/*      }})*/}
+
+                {/*  }}*/}
+                {/*>*/}
+                {/*  {el.apiName}*/}
+                {/*</Tag>*/}
               </Menu.Item>
             );
           }):<Empty description='暂无数据' />

@@ -15,22 +15,26 @@ export default class Home extends React.Component<{userStore:IUserStore}, any>{
 
     componentDidMount() {
         const isLogin = sessionStorage.getItem('isLogin')
-        if(isLogin == 'false') return this.props.history.push('/login')
+        if(!isLogin) return this.props.history.push('/login')
     }
 
     jumpToGitHub = ()=>{
         const {userInfo} = this.props.userStore
-        userInfo.html_url ? window.location.href = userInfo.html_url
+        userInfo.html_url ? window.open(userInfo.html_url)
                      : this.props.history.push('/login')
     }
 
     render() {
-        const {userInfo} = this.props.userStore
+        let {userInfo} = this.props.userStore
+        if(!userInfo.html_url) {
+            let temp  = sessionStorage.getItem('userInfo')
+            userInfo = temp && JSON.parse(temp)
+        }
         return <Layout>
             <Header className="header">
                 <div className="logo" />
                 <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
-                    <Menu.Item key="1">可视化配置api</Menu.Item>
+                    <Menu.Item key="1">可视化配置数据接口</Menu.Item>
                     <Menu.Item onClick={this.jumpToGitHub}>
                         <Avatar size="large"  src={userInfo.avatar_url}/>
                         <span style={{paddingLeft:'10px'}}>{userInfo.name}</span>
