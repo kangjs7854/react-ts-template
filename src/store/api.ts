@@ -49,6 +49,7 @@ class ApiStore {
 
   @observable editedJsonData = {}
 
+  @observable deletedKeyValue = {}
 
   @action
   updateApiList(apiList:IApiList[]) {
@@ -71,6 +72,11 @@ class ApiStore {
     this.handleMockApi()
   }
 
+  @action
+  updateDeletedKeyValue(deletedKeyValue:any){
+    this.deletedKeyValue = deletedKeyValue
+  }
+
   async getAllMockApi() {
     const apiList: IApiList[] = await api.getAllMockApi();
     this.updateApiList(apiList);
@@ -84,7 +90,7 @@ class ApiStore {
   }
 
   @action
-  async handleMockApi(deleteId:string) {
+  async handleMockApi(deleteId?:string) {
     const params:IParams = {
       apiName:this.apiName,
       dataSource:this.dataSource
@@ -98,6 +104,12 @@ class ApiStore {
     if(deleteId){
       Object.assign(params,{deleteId})
     }
+
+    //删除某个字段
+    if(this.deletedKeyValue){
+      Object.assign(params,{deletedKeyValue:this.deletedKeyValue})
+    }
+
     try {
       const res = await api.getMockApi(params);
       this.responseJson = res

@@ -23,6 +23,8 @@ declare class IApiStore{
     handleChooseApi(apiName:string|number):void
 
     updateEditedJsonData(editedJsonData:any):void
+
+    updateDeletedKeyValue(deletedKeyValue:any):void
 }
 
 interface IApiList {

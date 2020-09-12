@@ -31,7 +31,9 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
       const editedItem = updatedList[editedIndex]
       console.log(editedItem)
       const isDelete = data.name == '_id'
-      const isDeleteKey = data
+      // const isDeleteKey = !Object.keys(editedItem).includes(data.name)
+      const isDeleteKey = data.new_value ? false : true
+      //删除整条数据
       if(isDelete){
           Modal.confirm({
               title:"删除key为id时，数据库会删除整个数据",
@@ -41,6 +43,11 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
               }
           })
           return
+      }
+      if(isDeleteKey){//删除某个数据字段
+        this.props.apiStore.updateDeletedKeyValue({
+            [data.name]:data.existing_value
+        })
       }
       this.props.apiStore.updateEditedJsonData(editedItem)
   }
