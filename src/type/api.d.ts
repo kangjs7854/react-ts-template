@@ -21,6 +21,8 @@ declare class IApiStore{
     deleteMockApi(apiName:string|number):void
 
     handleChooseApi(apiName:string|number):void
+
+    updateEditedJsonData(editedJsonData:any):void
 }
 
 interface IApiList {

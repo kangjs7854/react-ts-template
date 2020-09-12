@@ -11,41 +11,6 @@ import CryptoJS from "crypto-js";
 
 let basePath:string = "http://localhost:3000";
 export default class Http {
-  constructor() {
-    this.requestTimestamp = new Date().getTime();
-    this.requestId = Http.createUniqueId();
-  }
-
-  //生成唯一的id
-  static createUniqueId() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      let r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
-  /**@description 生成签名
-   * 1.将参数的属性按 ASCII排序参数
-   * 2.拼接成字符串+服务端协商好的key
-   * 3.md5加密字符串
-   * @param {Object} params 参数
-   * @param {String} key 服务端协商好的密钥key
-   */
-  static createSign(params = {}, key = "") {
-    const paramsArr = Object.keys(params);
-    let signStr = "";
-
-    paramsArr.sort();
-    paramsArr.forEach((el) => {
-      signStr += `${el}=${params[el]}&`;
-    });
-
-    //最掉最后一个参数的&
-    signStr = signStr.slice(0, -1) + key;
-    return CryptoJS.MD5(signStr).toString().toUpperCase();
-  }
-
   /**
    * @description 处理不同请求头时的参数处理
    * Content-Type
@@ -66,12 +31,9 @@ export default class Http {
   post(url: string, params: any = {}) {
     //axios请求选项配置
     const option = {
-      timeout: 1000 * 10,
+      // timeout: 1000 * 10,
       headers: {
         "Content-Type": "application/json",
-        requestId: this.requestId,
-        requestTimestamp: this.requestTimestamp,
-        sign: Http.createSign(params),
       },
     };
     params = Http.handleParams(option.headers["Content-Type"], params);
@@ -91,7 +53,7 @@ export default class Http {
   get(url:string, params:any = {}, headers = {}) {
     url += "?" + qs.stringify(params);
     let instance = axios.create({
-      timeout: 1000 * 10,
+      // timeout: 1000 * 10,
       headers,
     });
     let reqUrl = url.includes("http") ? url : basePath + url;

@@ -1,10 +1,11 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
-import {Input, Button, Select, Row, Col, Divider, notification, Tooltip} from "antd";
+import {Input, Button, Select, Row, Col, Divider, notification, Tooltip, Modal} from "antd";
 import SchemaTable from "@/components/SchemaTable";
 import "./index.scss";
 import { CopyOutlined } from '@ant-design/icons';
 import ReactJson from "react-json-view";
+import api from "@/api";
 
 
 @inject("apiStore")
@@ -22,13 +23,26 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
     window.getSelection()?.removeAllRanges();
   };
 
-  handleDeleteJson = (data:any)=>{
-      console.log(data)
-  }
 
   handleEditJson = (data:any) => {
       console.log(data)
-
+      const editedIndex = data.namespace[1]
+      const updatedList = data.updated_src.data
+      const editedItem = updatedList[editedIndex]
+      console.log(editedItem)
+      const isDelete = data.name == '_id'
+      const isDeleteKey = data
+      if(isDelete){
+          Modal.confirm({
+              title:"删除key为id时，数据库会删除整个数据",
+              onOk:()=>{
+                  const deleteId = data.existing_value
+                  this.props.apiStore.handleMockApi(deleteId)
+              }
+          })
+          return
+      }
+      this.props.apiStore.updateEditedJsonData(editedItem)
   }
 
   render() {
@@ -64,7 +78,7 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
               <ReactJson src={apiStore.responseJson}
                          theme="google"
                          enableClipboard={()=>notification.success({message:"复制成功"})}
-                         onDelete={this.handleDeleteJson}
+                         onDelete={this.handleEditJson}
                          onEdit={this.handleEditJson}
               />
           </>

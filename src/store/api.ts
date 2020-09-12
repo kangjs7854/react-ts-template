@@ -47,6 +47,9 @@ class ApiStore {
   ]
   @observable responseJson:any = {}
 
+  @observable editedJsonData = {}
+
+
   @action
   updateApiList(apiList:IApiList[]) {
     this.apiList = apiList;
@@ -62,6 +65,12 @@ class ApiStore {
     this.dataSource = dataSource
   }
 
+  @action
+  updateEditedJsonData(editedJsonData:any){
+    this.editedJsonData = editedJsonData
+    this.handleMockApi()
+  }
+
   async getAllMockApi() {
     const apiList: IApiList[] = await api.getAllMockApi();
     this.updateApiList(apiList);
@@ -75,12 +84,20 @@ class ApiStore {
   }
 
   @action
-  async handleMockApi() {
+  async handleMockApi(deleteId:string) {
     const params:IParams = {
       apiName:this.apiName,
       dataSource:this.dataSource
     };
     if (!this.apiName) return notification.warning({ message: "api名称不能为空" });
+    //更新json数据
+    if(this.editedJsonData?._id){
+      Object.assign(params,{newData:this.editedJsonData})
+    }
+    //删除json数据
+    if(deleteId){
+      Object.assign(params,{deleteId})
+    }
     try {
       const res = await api.getMockApi(params);
       this.responseJson = res

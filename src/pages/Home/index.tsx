@@ -15,7 +15,7 @@ export default class Home extends React.Component<{userStore:IUserStore}, any>{
 
     componentDidMount() {
         const isLogin = sessionStorage.getItem('isLogin')
-        if(!isLogin) return this.props.history.push('/login')
+        // if(!isLogin) return this.props.history.push('/login')
     }
 
     jumpToGitHub = ()=>{
@@ -36,8 +36,8 @@ export default class Home extends React.Component<{userStore:IUserStore}, any>{
                 <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
                     <Menu.Item key="1">可视化配置数据接口</Menu.Item>
                     <Menu.Item onClick={this.jumpToGitHub}>
-                        <Avatar size="large"  src={userInfo.avatar_url}/>
-                        <span style={{paddingLeft:'10px'}}>{userInfo.name}</span>
+                        <Avatar size="large"  src={userInfo?.avatar_url}/>
+                        <span style={{paddingLeft:'10px'}}>{userInfo?.name}</span>
                     </Menu.Item>
                 </Menu>
             </Header>

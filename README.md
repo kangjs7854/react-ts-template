@@ -195,7 +195,7 @@ function Counter(){
     countStore.decrease()
   }
   return (
-      <div>
+      <div> 
         <Button onClick={handleDecrease}>-</Button>{countStore.count}<Button onClick={handleIncrease}>+</Button>
       </div>
     );
@@ -204,3 +204,4 @@ function Counter(){
 ```
 
 hook结合mobx也十分的简洁优雅，真的特别好的一个状态管理容器。当然还有其他的api和功能没有使用到，在后续也会继续的摸索尝试。
+

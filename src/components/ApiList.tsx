@@ -45,21 +45,14 @@ export default class ApiList extends Component<{ apiStore: IApiStore }> {
                   </span>
                   <DeleteOutlined onClick={(e)=>{
                     e.preventDefault()
-                    this.props.apiStore.deleteMockApi(el.apiName);
+                    e.stopPropagation()
+                    Modal.confirm({
+                      title:'确定删除？',
+                      onOk:()=>{
+                        this.props.apiStore.deleteMockApi(el.apiName);
+                      }
+                    })
                   }} />
-                {/*<Tag*/}
-                {/*  closable*/}
-                {/*  onClose={(e: any) => {*/}
-                {/*    Modal.confirm({*/}
-                {/*      title:"确定删除?",*/}
-                {/*      onOk:()=>{*/}
-                {/*        this.handleDelete(el.apiName, e)*/}
-                {/*      }})*/}
-
-                {/*  }}*/}
-                {/*>*/}
-                {/*  {el.apiName}*/}
-                {/*</Tag>*/}
               </Menu.Item>
             );
           }):<Empty description='暂无数据' />
