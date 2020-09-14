@@ -312,16 +312,17 @@ class EditableTable extends React.Component<IProps> {
       el.children && el.children.length == 0 && delete el.children
     })
     return (
-      <div>
-        <div className='row button-wrap'>
+      <div >
+        <div className='row button-wrap '>
           <Button shape="round" style={{paddingRight:'20px'}} onClick={this.handleAdd} type="primary">
             添加所需要的字段
           </Button>
-          <Button shape="round" className="mock" type="ghost" onClick={this.handleSubmit}>
+          <Button shape="round" className="mock my-third-step" type="ghost" onClick={this.handleSubmit}>
             mock
           </Button>
         </div>
         <Table
+          className='my-second-step'
           components={this.components}
           rowClassName={(record) => "editable-row"}
           bordered

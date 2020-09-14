@@ -25,6 +25,7 @@ export default class ApiList extends Component<{ apiStore: IApiStore }> {
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}
         style={{ height: "100%" }}
+        className='my-six-step'
       >
         <Badge className="badge" count={this.props.apiStore.apiList?.length} title="当前api个数">
           <a href="#" className="head-example" />

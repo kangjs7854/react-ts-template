@@ -59,7 +59,7 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
         <div className="row">
             <span>api名称</span>
             <Input
-                className="input-wrap"
+                className="input-wrap  my-first-step"
                 placeholder="api名称："
                 value={apiStore.apiName}
                 onChange={(e) =>
@@ -67,20 +67,21 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
                 }
 
             />
-            {apiStore.apiName && (
-                <>
-                    <Tooltip title="默认为post请求">
+
+                <div className="my-five-step">
+                    {apiStore.apiName && ( <Tooltip title="默认为post请求">
                         <span id="mock-url">{apiStore.baseUrl+apiStore.apiName}</span>
                     </Tooltip>
+                    )}
                     <Button className='copy-btn' type="primary" shape="round" onClick={this.handleCopy} icon={<CopyOutlined />}  >复制</Button>
-                </>
-            )}
+                </div>
+
         </div>
         <Divider orientation="left">定义数据结构</Divider>
         <SchemaTable />
 
-        {apiStore.responseJson?.data? (
-          <>
+
+          <div className='my-four-step'>
               <Divider orientation="left">响应数据：</Divider>
               <ReactJson src={apiStore.responseJson}
                          theme="google"
@@ -88,8 +89,8 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
                          onDelete={this.handleEditJson}
                          onEdit={this.handleEditJson}
               />
-          </>
-        ) : null}
+          </div>
+
       </>
     );
   }

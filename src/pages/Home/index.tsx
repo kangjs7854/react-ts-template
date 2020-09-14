@@ -9,6 +9,7 @@ import {GithubOutlined} from '@ant-design/icons';
 import './index.scss'
 import {inject, observer} from "mobx-react";
 
+import Guide from '@/components/Guide'
 @inject('userStore')
 @observer
 export default class Home extends React.Component<{userStore:IUserStore}, any>{
@@ -42,6 +43,7 @@ export default class Home extends React.Component<{userStore:IUserStore}, any>{
                 </Menu>
             </Header>
             <Content style={{ padding: "0 50px" }}>
+                <Guide />
                 <Breadcrumb style={{ margin: "16px 0" }}>
                     <Breadcrumb.Item>Home</Breadcrumb.Item>
                     <Breadcrumb.Item>List</Breadcrumb.Item>

@@ -6,8 +6,9 @@ import {Skeleton} from "antd";
 const Home  = React.lazy(()=> import('@/pages/Home'))
 const Login  = React.lazy(()=> import('@/pages/login'))
 const Error  = React.lazy(()=>import('@/pages/Error'))
-const Counter  = React.lazy(()=>import('@/components/Counter'))
 const AuthResult  = React.lazy(()=>import('@/pages/AuthResult'))
+
+const Counter  = React.lazy(()=>import('@/components/Counter'))
 
 
 const routes = [

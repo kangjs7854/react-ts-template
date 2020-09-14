@@ -12,20 +12,18 @@ import {observer} from 'mobx-react';
 import DevTools from 'mobx-react-devtools'
 import { HashRouter } from 'react-router-dom';
 
-
-
 @observer
 class App extends React.Component  {
-  render(){
-    return (
-      <div className="App">
-          <HashRouter>
-                <Routes />
-          </HashRouter>
-            {process.env.NODE_ENV !== 'production' ? <DevTools /> : null}
-      </div>
-    );
-  }
+    render(){
+        return (
+            <div className="App">
+                  <HashRouter>
+                        <Routes />
+                  </HashRouter>
+                {process.env.NODE_ENV !== 'production' ? <DevTools /> : null}
+            </div>
+        );
+      }
 };
 
 export default hot(App);
