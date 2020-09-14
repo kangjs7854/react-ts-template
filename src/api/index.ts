@@ -8,24 +8,22 @@ import Http from "@/utils/http";
 
 const http = new Http();
 
-let baseUrl:string = process.env.NODE_ENV == 'production' ? 'http://175.24.20.162:32775/api/mock' : 'http://localhost:3000/api/mock'
-
-
+const baseUrl:string = process.env.NODE_ENV == 'production' ? `http://${window.location.host}` : 'http://localhost:3000'
 export default {
     getMockApi(params:IParams) {
-        return http.post(baseUrl + '/' + params.apiName, params)
+        return http.post( baseUrl+'/api/mock/' + params.apiName, params)
     },
 
     getAllMockApi() {
-        return http.get(baseUrl)
+        return http.get(baseUrl+'/api/mock')
     },
 
     deleteMockApi(apiName:string){
-        return http.delete(baseUrl,{apiName})
+        return http.delete(baseUrl+'/api/mock/',{apiName})
     },
 
     sendAuthCode(code:string){
-        return http.post('http://localhost:3000/api/auth',{code})
+        return http.post(baseUrl+'/api/auth',{code})
 
     }
 

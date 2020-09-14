@@ -5,7 +5,7 @@ import ApiForm from "@/components/ApiForm";
 import DevTools from "mobx-react-devtools";
 import api from '@/api/index'
 const { Header, Content, Footer, Sider } = Layout;
-import {UserOutlined} from '@ant-design/icons';
+import {GithubOutlined} from '@ant-design/icons';
 import './index.scss'
 import {inject, observer} from "mobx-react";
 
@@ -59,7 +59,7 @@ export default class Home extends React.Component<{userStore:IUserStore}, any>{
                 </Layout>
             </Content>
             <Footer style={{ textAlign: "center" }}>
-                Ant Design ©2018 Created by Ant UED
+                <h3> ©2020 Created by kangjs <GithubOutlined onClick={()=>window.open('https://github.com/kangjs7854')}/></h3>
                 {process.env.NODE_ENV !== 'production' ? <DevTools /> : null}
             </Footer>
         </Layout>;

@@ -10,7 +10,7 @@ import { notification } from "antd";
 
 
 class ApiStore {
-  @observable baseUrl :string = 'http://localhost:3000/api/mock/'
+  @observable baseUrl :string = process.env.NODE_ENV == 'production' ? `http://${window.location.host}/api/mock/` : 'http://localhost:3000/api/mock/'
   @observable apiName:string | number = ''
 
   @observable apiList: IApiList[] = [];

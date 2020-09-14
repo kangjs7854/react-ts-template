@@ -29,7 +29,7 @@ export default class ApiList extends Component<{ apiStore: IApiStore }> {
         <Badge className="badge" count={this.props.apiStore.apiList?.length} title="当前api个数">
           <a href="#" className="head-example" />
         </Badge>
-        {this.props.apiStore.apiList.length?
+        {this.props.apiStore.apiList?.length?
             this.props.apiStore.apiList.map((el, index: number) => {
             return (
               <Menu.Item

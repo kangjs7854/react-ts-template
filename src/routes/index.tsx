@@ -1,11 +1,14 @@
 //HashRouter  (./router/index.tsx)
 import React, { Component } from 'react';
 import { HashRouter, Switch, Route, Redirect ,withRouter, } from 'react-router-dom';
-import Home from '@/pages/Home'
-import Login from  '@/pages/login'
-import Error from '@/pages/Error'
-import Counter from '@/components/Counter'
-import AuthResult from "@/pages/AuthResult";
+import {Skeleton} from "antd";
+
+const Home  = React.lazy(()=> import('@/pages/Home'))
+const Login  = React.lazy(()=> import('@/pages/login'))
+const Error  = React.lazy(()=>import('@/pages/Error'))
+const Counter  = React.lazy(()=>import('@/components/Counter'))
+const AuthResult  = React.lazy(()=>import('@/pages/AuthResult'))
+
 
 const routes = [
     {
@@ -35,12 +38,13 @@ const routes = [
 class renderRoutes extends Component {
 
     render(){
-        const isLogin = sessionStorage.getItem('isLogin')
-        return  <Switch>
-            { routes.map(el => <Route  exact={el.exact} path={el.path} render={props => (
-                    <el.component {...props} routes={el.routes} />
-                )}/>)}
-        </Switch>
+        return <React.Suspense fallback={<Skeleton avatar paragraph={{ rows: 4 }} />}>
+                    <Switch>
+                        { routes.map(el => <Route  exact={el.exact} path={el.path} render={props => (
+                                <el.component {...props} routes={el.routes} />
+                            )}/>)}
+                    </Switch>
+             </React.Suspense>
 
     }
 }
