@@ -22,28 +22,7 @@ class ApiStore {
       type: "String",
       unique:true
     },
-    {
-      id:2,
-      key: "age",
-      value: "18",
-      type: "Number",
-    },
-    {
-      id:3,
-      key: "card",
-      value:"",
-      children: [
-        {
-          id:4,
-          key:"cardNo",
-          value:"78543785",
-          type:'String',
-          isInner:true
-        },
 
-      ],
-      type: "Object",
-    },
   ]
   @observable responseJson:any = {}
 

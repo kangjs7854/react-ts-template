@@ -25,6 +25,14 @@ export default {
     sendAuthCode(code:string){
         return http.post(baseUrl+'/api/auth',{code})
 
+    },
+
+    login(userName:string,passWord:string){
+        return http.post(baseUrl+'/api/jwt',{
+            userName,
+            passWord
+        })
+
     }
 
 }
