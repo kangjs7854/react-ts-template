@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, action,autorun } from "mobx";
 import api from "@/api";
 import {notification} from "antd";
 
@@ -8,7 +8,7 @@ export default class User{
         avatar_url:'',
         name:""
     }
-    @observable isLogin:boolean = false
+    @observable isLogin:boolean = sessionStorage.getItem('token')  ? true : false
     @observable userName:string = ''
     @observable passWord:string = ''
 
@@ -26,8 +26,10 @@ export default class User{
             this.isLogin = true
             this.userName = userName
             sessionStorage.setItem('token',data.data.token)
+            location.href = `http://${window.location.host}/#/`
         }
-
-
     }
+
+
+
 }

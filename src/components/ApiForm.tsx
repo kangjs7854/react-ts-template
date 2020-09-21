@@ -2,11 +2,10 @@ import React from "react";
 import { observer, inject } from "mobx-react";
 import {Input, Button, Select, Row, Col, Divider, notification, Tooltip, Modal} from "antd";
 import SchemaTable from "@/components/SchemaTable";
-import "./index.scss";
 import { CopyOutlined } from '@ant-design/icons';
 import ReactJson from "react-json-view";
-import api from "@/api";
 
+import "./index.scss";
 
 @inject("apiStore")
 @observer
@@ -26,17 +25,19 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
 
   handleEditJson = (data:any) => {
       console.log(data)
+      //编辑字段的数据对象所属位置下标
       const editedIndex = data.namespace[1]
       const updatedList = data.updated_src.data
+      //编辑完成后，该字段所在的数据对象
       const editedItem = updatedList[editedIndex]
-      console.log(editedItem)
+      console.log("修改完的数据",editedItem)
+      //删除的字段名为id，即删除整条数据
       const isDelete = data.name == '_id'
-      // const isDeleteKey = !Object.keys(editedItem).includes(data.name)
+      //new_value 字段为空，则为删除某个字段
       const isDeleteKey = data.new_value ? false : true
-      //删除整条数据
       if(isDelete){
           Modal.confirm({
-              title:"删除key为id时，数据库会删除整个数据",
+              title:"编辑字段为id时，数据库会删除整个数据，是否继续该操作",
               onOk:()=>{
                   const deleteId = data.existing_value
                   this.props.apiStore.handleMockApi(deleteId)
@@ -44,10 +45,17 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
           })
           return
       }
-      if(isDeleteKey){//删除某个数据字段
-        this.props.apiStore.updateDeletedKeyValue({
-            [data.name]:data.existing_value
-        })
+      if(isDeleteKey){
+          let deleteKey = ''
+          if(data.namespace[2]){
+              deleteKey = `${data.namespace[2]}.${data.name}`
+          }else{
+              deleteKey = `${data.name}`
+          }
+
+        this.props.apiStore.updateDeletedKeyValue(deleteKey)
+      }else{//不是删除字段时，注意把之前存储到mobx删除的键值对清除，否则会影响到修改json数据
+          this.props.apiStore.updateDeletedKeyValue({})
       }
       this.props.apiStore.updateEditedJsonData(editedItem)
   }

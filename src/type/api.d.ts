@@ -14,7 +14,7 @@ declare class IApiStore{
 
     getAllMockApi():void
 
-    handleMockApi():void
+    handleMockApi(deleteId?:string):void
 
     setRequireKey(key:string):void
 

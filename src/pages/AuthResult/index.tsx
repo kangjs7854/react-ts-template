@@ -1,9 +1,9 @@
 import React from 'react'
-import {Button, notification, Result, Spin} from "antd";
-import api from "@/api";
 import {inject, observer} from "mobx-react";
-import user from "@/store/user";
 
+import {Button, notification, Result, Spin} from "antd";
+
+import api from "@/api";
 
 @inject('userStore')
 @observer

@@ -1,12 +1,26 @@
 //HashRouter  (./router/index.tsx)
 import React, { Component } from 'react';
 import { HashRouter, Switch, Route, Redirect ,withRouter, } from 'react-router-dom';
-import {Skeleton} from "antd";
+import {Skeleton, Button} from "antd";
 
 const Home  = React.lazy(()=> import('@/pages/Home'))
+const Login = React.lazy(()=>import('@/pages/Login'))
 const AuthResult  = React.lazy(()=>import('@/pages/AuthResult'))
-
 const Counter  = React.lazy(()=>import('@/components/Counter'))
+import { Empty } from 'antd';
+
+function ErrorPage({history}){
+    return <Empty
+        image="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQzYKyPSfTbOs5ddkLlMgUN3WjcKuvrqJp24Q&usqp=CAU"
+        imageStyle={{
+            height: 200,
+            margin: '20px'
+        }}
+        description={<h3> 找不到该页面 </h3>}
+    >
+        <Button shape="round" onClick={()=>history.push("/")}>回到首页</Button>
+    </Empty>
+}
 
 const routes = [
     {
@@ -21,13 +35,18 @@ const routes = [
         ]
     },
     {
+        path: "/login",
+        component:Login
+    },
+    {
         path:"/authResult",
         component: AuthResult
     },
     {
         path:"/*",
-        component:Home,
+        component:ErrorPage,
     },
+
 ]
 class renderRoutes extends Component {
     render(){

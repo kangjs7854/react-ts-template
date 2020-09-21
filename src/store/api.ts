@@ -28,7 +28,7 @@ class ApiStore {
 
   @observable editedJsonData = {}
 
-  @observable deletedKeyValue = {}
+  @observable deletedKey:string = ''
 
   @action
   updateApiList(apiList:IApiList[]) {
@@ -52,8 +52,8 @@ class ApiStore {
   }
 
   @action
-  updateDeletedKeyValue(deletedKeyValue:any){
-    this.deletedKeyValue = deletedKeyValue
+  updateDeletedKeyValue(deletedKey:string){
+    this.deletedKey = deletedKey
   }
 
   async getAllMockApi() {
@@ -84,25 +84,23 @@ class ApiStore {
       Object.assign(params,{deleteId})
     }
 
-    //删除某个字段
-    if(this.deletedKeyValue){
-      Object.assign(params,{deletedKeyValue:this.deletedKeyValue})
+    //删除json数据的某个字段
+    if(this.deletedKey){
+      Object.assign(params,{deletedKey:this.deletedKey})
     }
-
-    try {
-      const res = await api.getMockApi(params);
-      this.responseJson = res
-      notification.warning({ message: "mock成功" });
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await api.getMockApi(params);
+    if(!res)return
+    this.responseJson = res
+    notification.warning({ message: "mock成功" });
   }
 
   handleChooseApi(apiName: string) {
     const res:any = this.apiList.find((el) => el.apiName == apiName);
-    this.updateDataSource(res.dataSource)
     this.updateApiName(res.apiName)
     this.handleMockApi();
+    //注意更新表格数据应该放在mock完之后，否则每次点击选择api都会先更新表格数据再mock，导致最初的数据无法修改
+    this.updateDataSource(res.dataSource)
+
   }
 }
 

@@ -4,7 +4,7 @@ interface IUserStore{
     userName:string
     passWord:string
     updateUserInfo(userInfo:IUser):void
-    handleLogin(userName:string,password:string):void
+    handleLogin(userName:string,password:string):boolean
 }
 
 interface IUserInfo{
