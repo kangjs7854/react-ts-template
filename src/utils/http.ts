@@ -90,8 +90,10 @@ export default class Http {
 
     delete(url: string, params = {}) {
         const instance = this.initRequestInstance();
+        let reqUrl = url.includes("http") ? url : basePath + url;
+
         return instance
-            .delete(url, {data: params})
+            .delete(reqUrl, {data: params})
             .then((res) => {
                 return res.data;
             })

@@ -53,9 +53,9 @@ class FormSizeDemo extends React.Component  <{ apiStore:IApiStore }>{
               deleteKey = `${data.name}`
           }
 
-        this.props.apiStore.updateDeletedKeyValue(deleteKey)
+        this.props.apiStore.updateDeleteKey(deleteKey)
       }else{//不是删除字段时，注意把之前存储到mobx删除的键值对清除，否则会影响到修改json数据
-          this.props.apiStore.updateDeletedKeyValue({})
+          this.props.apiStore.updateDeleteKey('')
       }
       this.props.apiStore.updateEditedJsonData(editedItem)
   }

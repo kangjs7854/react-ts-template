@@ -11,7 +11,7 @@ export default {
     },
 
     deleteMockApi(apiName:string){
-        return http.delete('/api/mock/',{apiName})
+        return http.delete('/api/mock',{apiName})
     },
 
     sendAuthCode(code:string){

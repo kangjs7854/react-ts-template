@@ -14,7 +14,7 @@ declare class IApiStore{
 
     getAllMockApi():void
 
-    handleMockApi(deleteId?:string):void
+    handleMockApi(deleteId?:string,isInsert?:boolean):void
 
     setRequireKey(key:string):void
 
@@ -24,7 +24,7 @@ declare class IApiStore{
 
     updateEditedJsonData(editedJsonData:any):void
 
-    updateDeletedKeyValue(deletedKeyValue:any):void
+    updateDeleteKey(deleteKey:string):void
 }
 
 interface IApiList {
@@ -41,6 +41,7 @@ interface IDataSource {
     type: string;
     unique?:boolean
     isInner?:boolean,
+    desc:string,
 }
 interface IParams{
     apiName:string| number,

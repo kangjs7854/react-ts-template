@@ -20,6 +20,7 @@ class ApiStore {
       key: "name",
       value: "张三",
       type: "String",
+      desc:"用户姓名",
       unique:true
     },
 
@@ -28,7 +29,7 @@ class ApiStore {
 
   @observable editedJsonData = {}
 
-  @observable deletedKey:string = ''
+  @observable deleteKey:string = ''
 
   @action
   updateApiList(apiList:IApiList[]) {
@@ -52,8 +53,8 @@ class ApiStore {
   }
 
   @action
-  updateDeletedKeyValue(deletedKey:string){
-    this.deletedKey = deletedKey
+  updateDeleteKey(deleteKey:string){
+    this.deleteKey = deleteKey
   }
 
   async getAllMockApi() {
@@ -69,7 +70,7 @@ class ApiStore {
   }
 
   @action
-  async handleMockApi(deleteId?:string) {
+  async handleMockApi(deleteId?:string,isInsert?:boolean) {
     const params:IParams = {
       apiName:this.apiName,
       dataSource:this.dataSource
@@ -85,9 +86,14 @@ class ApiStore {
     }
 
     //删除json数据的某个字段
-    if(this.deletedKey){
-      Object.assign(params,{deletedKey:this.deletedKey})
+    if(this.deleteKey){
+      Object.assign(params,{deleteKey:this.deleteKey})
     }
+
+    if(isInsert){
+      Object.assign(params,{isInsert})
+    }
+
     const res = await api.getMockApi(params);
     if(!res)return
     this.responseJson = res

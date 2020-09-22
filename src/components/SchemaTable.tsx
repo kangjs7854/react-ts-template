@@ -76,7 +76,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
                 name={dataIndex}
                 rules={[
                     {
-                        required: dataIndex != "value",
+                        required: dataIndex != "value" && dataIndex != 'desc',
                         message: `${title} is required.`,
                     },
                 ]}
@@ -151,11 +151,12 @@ class EditableTable extends React.Component<IProps> {
             dataIndex: 'value',
             width: "30%",
             editable: true,
-            // render(text:string,record:IDataSource){
-            //   return record.type == 'Object'
-            //       ? <FallOutlined className='obj-icon' rotate={90} />
-            //       : <p>{text}</p>
-            // }
+        },
+        {
+            title: "描述",
+            dataIndex: 'desc',
+            width: "30%",
+            editable: true,
         },
         {
             title: "操作",
@@ -317,7 +318,7 @@ class EditableTable extends React.Component<IProps> {
 
     handleSubmit = async () => {
         const {apiStore} = this.props;
-        await apiStore.handleMockApi();
+        await apiStore.handleMockApi('',true);
         await apiStore.getAllMockApi()
     };
 
