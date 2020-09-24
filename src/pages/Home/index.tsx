@@ -16,13 +16,15 @@ import './index.scss'
 export default class Home extends React.Component<{ userStore: IUserStore }, {}> {
 
     componentDidMount() {
-        !this.props.userStore.isLogin && this.props.history.push("/login")
+        if(!this.props.userStore.isLogin && !sessionStorage.getItem('isLogin')){
+            this.props.history.push("/login")
+        }
     }
 
     render() {
         return <Layout>
             <Content style={{padding: "0 50px"}}>
-                {this.props.userStore.isLogin &&  <Guide/>}
+                {(this.props.userStore.isLogin || sessionStorage.getItem('isLogin'))&&  <Guide/>}
                 <Breadcrumb style={{margin: "16px 0"}}>
                     <Breadcrumb.Item>Home</Breadcrumb.Item>
                     <Breadcrumb.Item>List</Breadcrumb.Item>

@@ -6,6 +6,7 @@ import DevTools from 'mobx-react-devtools'
 import { HashRouter } from 'react-router-dom';
 import {Avatar, Layout, Menu} from "antd";
 const {Header,} = Layout;
+import {SettingOutlined} from '@ant-design/icons';
 
 
 @observer
@@ -16,11 +17,8 @@ class App extends React.Component  {
                 <Header className="header">
                     <div className="logo"/>
                     <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["2"]}>
-                        <Menu.Item key="1">可视化配置数据接口</Menu.Item>
-                        {/*<Menu.Item onClick={this.jumpToGitHub}>*/}
-                        {/*    <Avatar size="large" src={userInfo?.avatar_url}/>*/}
-                        {/*    <span style={{paddingLeft: '10px'}}>{userInfo?.name || userName}</span>*/}
-                        {/*</Menu.Item>*/}
+                        <Menu.Item key="1" onClick={()=>location.href=`http://${window.location.host}/#/`}>可视化配置数据接口</Menu.Item>
+                        <Menu.Item key="2"  onClick={()=>location.href=`http://${window.location.host}/#/admin`}><SettingOutlined /></Menu.Item>
                     </Menu>
                 </Header>
                  <div >

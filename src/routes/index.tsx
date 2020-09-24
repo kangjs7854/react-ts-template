@@ -8,7 +8,7 @@ const Login = React.lazy(()=>import('@/pages/Login'))
 const AuthResult  = React.lazy(()=>import('@/pages/AuthResult'))
 const Counter  = React.lazy(()=>import('@/components/Counter'))
 import { Empty } from 'antd';
-
+const Admin = React.lazy(()=>import('@/pages/Admin'))
 function ErrorPage({history}){
     return <Empty
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQzYKyPSfTbOs5ddkLlMgUN3WjcKuvrqJp24Q&usqp=CAU"
@@ -43,9 +43,14 @@ const routes = [
         component: AuthResult
     },
     {
+        path:"/admin",
+        component:Admin
+    },
+    {
         path:"/*",
         component:ErrorPage,
     },
+
 
 ]
 class renderRoutes extends Component {

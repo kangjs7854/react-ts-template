@@ -13,7 +13,7 @@ export default class LoginForm extends React.Component<{ userStore:IUserStore}, 
     };
 
     render() {
-        const redirectUri = window.location.href + 'authResult'
+        const redirectUri = window.location.href.replace('login','authResult')
         return  (
             <div className='login-dialog'>
                 <Form
